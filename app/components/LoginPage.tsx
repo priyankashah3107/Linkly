@@ -28,9 +28,12 @@ export default function LoginPage() {
     try {
       // login Logic
 
-      const response = await axios.post("http://localhost:3000/api/login");
+      const response = await axios.post(
+        "http://localhost:3000/api/login",
+        formData
+      );
       if (response.status === 201) {
-        toast.error("Login Successfully");
+        toast.success("Login Successfully");
       }
       console.log("Response data", response.data);
       console.log("FormData from LoginPage", formData);
@@ -38,7 +41,7 @@ export default function LoginPage() {
       if (axios.isAxiosError(error) && error.response) {
         setError(error.response.data.error || "Something went wrong");
       } else {
-        setError("Failed to Login. Please try again");
+        setError("Failed to register. Please try again");
       }
       console.log("Error During Login", error);
     } finally {
@@ -85,7 +88,7 @@ export default function LoginPage() {
         </div>
 
         {/* error */}
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500">Error message here</p>}
 
         <button
           type="submit"
