@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <>
       {/* desktop version */}
-      <nav className="hidden  lg:flex flex-row justify-between  md:px-20 md:py-5">
+      <nav className=" hidden  lg:flex flex-row justify-between  md:px-20 md:py-5  mt-6">
         <div>
           <Image
             src={"/linkly.svg"}
@@ -16,7 +16,7 @@ const Navbar = () => {
             className="lg:w-[120px] lg:h-[47px] cursor-pointer"
           />
         </div>
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-4">
           <LoginButton />
           <SignupButton
             size="large"

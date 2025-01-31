@@ -20,30 +20,36 @@
 // export default Page;
 
 import React from "react";
-import LoginButton from "./components/LoginButton";
-import SignupButton from "./components/SignupButton";
-import Image from "next/image";
+
 import Navbar from "./components/Navbar";
+import Image from "next/image";
+import HomePage from "./components/HomePage";
 
 const page = () => {
   return (
     <>
-      {/* <Image
-        src={"/linkly.svg"}
-        alt="log"
-        width={120}
-        height={47}
-        className="md:w-[120px] md:h-[47px] cursor-pointer"
-      />
-      <LoginButton />
-      <SignupButton
-        size="large"
-        className="my-custom-class"
-        // onClick={handleSignup}
-      >
-        Get Started
-      </SignupButton> */}
-      <Navbar />
+      <div className="relative w-full h-screen ">
+        <Image
+          src={"/Swirl.svg"}
+          alt="img"
+          width={100}
+          height={100}
+          className="w-full h-full absolute"
+        />
+        <Image
+          src={"/Cubes.svg"}
+          alt="cubes"
+          width={100}
+          height={100}
+          className="w-full h-full "
+        />
+        <div className="absolute top-0 left-0 w-full z-50">
+          <Navbar />
+        </div>
+      </div>
+      <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-50">
+        <HomePage />
+      </div>
     </>
   );
 };
