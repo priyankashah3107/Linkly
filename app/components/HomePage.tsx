@@ -1,4 +1,5 @@
 import React from "react";
+import LinkPage from "./LinkPage";
 
 const HomePage = () => {
   return (
@@ -39,6 +40,8 @@ const HomePage = () => {
           more links. Register Now to enjoy Unlimited usage
         </span>
       </div>
+
+      <LinkPage />
     </div>
   );
 };
