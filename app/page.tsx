@@ -43,11 +43,11 @@ const page = () => {
           height={100}
           className="w-full h-full "
         />
-        <div className="absolute top-0 left-0 w-full z-50">
+        <div className="absolute top-0 left-0 w-full z-[60]">
           <Navbar />
         </div>
       </div>
-      <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-50">
+      <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-40">
         <HomePage />
       </div>
     </>

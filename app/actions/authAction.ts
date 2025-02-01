@@ -61,6 +61,7 @@ export async function registerUser(request: Request) {
     );
 
     // Set JWT cookie
+    // use Nextjs Cookie to set the headers not header to set the cookie
     response.headers.set(
       "Set-Cookie",
       `jwt=${token}; HttpOnly; Path=/; Max-Age=${
@@ -130,6 +131,7 @@ export async function loginUser(request: Request) {
     // );
     // response.headers.set("Access-Control-Allow-Credentials", "true");
 
+    // use Nextjs Cookie to set the headers not header to set the cookie
     response.headers.set(
       "Set-Cookie",
       `jwt=${token}; HttpOnly; Path=/; Max-Age=${

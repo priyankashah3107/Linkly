@@ -4,7 +4,7 @@ import LinkPage from "./LinkPage";
 const HomePage = () => {
   return (
     <>
-      <div className="absolute top-32 md:top-60">
+      <div className=" mt-96">
         <div className="flex flex-col items-center text-center px-4 md:px-10">
           {/* Heading */}
           <h1 className="bg-gradient-to-tr from-[#144ee3] to-[#EB568E] bg-clip-text text-transparent text-4xl sm:text-5xl lg:text-6xl font-extrabold font-['Inter'] leading-tight lg:leading-[80px]">
@@ -43,7 +43,7 @@ const HomePage = () => {
             </span>
           </div>
         </div>
-        <div className="w-full">
+        <div className="w-full ">
           <LinkPage />
         </div>
       </div>
