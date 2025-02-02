@@ -333,7 +333,7 @@ export async function getMe(request: Request) {
       return NextResponse.json({ user, token: newToken }, { status: 200 });
     }
 
-    return NextResponse.json({ user }, { status: 200 });
+    return NextResponse.json({ user, token }, { status: 200 });
   } catch (error) {
     console.error("Error in getMe:", error);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

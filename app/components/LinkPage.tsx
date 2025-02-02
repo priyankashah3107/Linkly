@@ -76,18 +76,19 @@ const LinkPage = () => {
   }, []);
 
   return (
-    <div className="w-screen max-w-7xl mt-10 overflow-x-auto">
-      <table className="w-full text-white bg-[#181e29] shadow-md rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-[#222936] text-left text-gray-300 font-semibold">
-            <th className="px-6 py-3">Short Link</th>
-            <th className="px-6 py-3 hidden lg:table-cell">Long Link</th>
-            <th className="px-6 py-3">QR Code</th>
-            <th className="px-6 py-3 hidden lg:table-cell">Clicks</th>
-            <th className="px-6 py-3 hidden lg:table-cell">Date</th>
-          </tr>
-        </thead>
-        {/* <tbody>
+    <div className="flex justify-center">
+      <div className="w-screen max-w-7xl mt-10 overflow-x-auto">
+        <table className="w-full text-white bg-[#181e29] shadow-md rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-[#222936] text-left text-gray-300 font-semibold">
+              <th className="px-6 py-3">Short Link</th>
+              <th className="px-6 py-3 hidden lg:table-cell">Long Link</th>
+              <th className="px-6 py-3">QR Code</th>
+              <th className="px-6 py-3 hidden lg:table-cell">Clicks</th>
+              <th className="px-6 py-3 hidden lg:table-cell">Date</th>
+            </tr>
+          </thead>
+          {/* <tbody>
           {linkData.map((val) => (
             <tr
               key={val.id}
@@ -125,49 +126,50 @@ const LinkPage = () => {
             </tr>
           ))}
         </tbody> */}
-        <tbody>
-          {urls?.map((val) => (
-            <tr
-              key={val.id}
-              className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
-            >
-              <td className="px-6 py-4">
-                <Link
-                  target="_blank"
-                  href={`/${val.shortUrl}`}
-                  className="text-blue-400 hover:underline flex items-center gap-2 truncate"
-                >
-                  {val.shortUrl}
-                  <Copy className="w-4 h-4" />
-                </Link>
-              </td>
-              <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
-                <Link
-                  target="_blank"
-                  href={val.longUrl}
-                  className="text-gray-400 hover:underline truncate"
-                >
-                  {val.longUrl}
-                </Link>
-              </td>
-              <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                <img src={val.qrCode} alt="QR Code" className="w-8 h-8" />
-                <Download className="cursor-pointer" />
-              </td>
-              <td className="px-6 py-4 text-center hidden lg:table-cell">
-                {val.clicks ?? 0}
-              </td>
-              <td className="px-6 py-4 text-center hidden lg:table-cell">
-                {new Date(val.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {urls?.map((val) => (
+              <tr
+                key={val.id}
+                className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
+              >
+                <td className="px-6 py-4">
+                  <Link
+                    target="_blank"
+                    href={`/${val.shortUrl}`}
+                    className="text-blue-400 hover:underline flex items-center gap-2 truncate"
+                  >
+                    {val.shortUrl}
+                    <Copy className="w-4 h-4" />
+                  </Link>
+                </td>
+                <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
+                  <Link
+                    target="_blank"
+                    href={val.longUrl}
+                    className="text-gray-400 hover:underline truncate"
+                  >
+                    {val.longUrl}
+                  </Link>
+                </td>
+                <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
+                  <img src={val.qrCode} alt="QR Code" className="w-8 h-8" />
+                  <Download className="cursor-pointer" />
+                </td>
+                <td className="px-6 py-4 text-center hidden lg:table-cell">
+                  {val.clicks ?? 0}
+                </td>
+                <td className="px-6 py-4 text-center hidden lg:table-cell">
+                  {new Date(val.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

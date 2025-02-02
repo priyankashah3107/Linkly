@@ -6,9 +6,13 @@ import { Eye, Github, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import useAuth from "../hooks/useAuth";
 export default function LoginPage() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -20,28 +24,62 @@ export default function LoginPage() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // const onFormSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     // login Logic
+
+  //     const response = await axios.post(
+  //       "http://localhost:3000/api/login",
+  //       formData
+  //     );
+  //     if (response.status === 201) {
+  //       toast.success("Login Successfully");
+  //       router.push("/admin");
+  //     }
+  //     console.log("Response data", response.data);
+  //     console.log("FormData from LoginPage", formData);
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error) && error.response) {
+  //       setError(error.response.data.error || "Something went wrong");
+  //     } else {
+  //       setError("Failed to register. Please try again");
+  //     }
+  //     console.log("Error During Login", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      // login Logic
-
       const response = await axios.post(
         "http://localhost:3000/api/login",
         formData
       );
-      if (response.status === 201) {
+      console.log("Response data:", response.data);
+      if (response.status === 200) {
         toast.success("Login Successfully");
+        setTimeout(() => {
+          if (isAuthenticated) {
+            router.push("/admin"); // Redirect if authenticated
+          }
+        }, 1000);
+      } else {
+        setError("Login failed, please try again.");
       }
-      console.log("Response data", response.data);
-      console.log("FormData from LoginPage", formData);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setError(error.response.data.error || "Something went wrong");
       } else {
-        setError("Failed to register. Please try again");
+        setError("Failed to log in. Please try again.");
       }
       console.log("Error During Login", error);
     } finally {

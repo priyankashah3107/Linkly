@@ -4,22 +4,24 @@ import React, { useEffect, useState } from "react";
 import LinkPage from "./LinkPage";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import useAuth from "../hooks/useAuth";
 
 const HomePage = () => {
   // const [url, setUrl] = useState("");
   const [longUrl, setlongUrl] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated } = useAuth();
 
-  // Check if the user is authenticated
-  const authUser = async () => {
-    try {
-      await axios.get("http://localhost:3000/api/me"); // This will check the user's auth status
-      setIsAuthenticated(true); // If the user is authenticated, set state to true
-    } catch (error) {
-      setIsAuthenticated(false); // If the user is not authenticated, set state to false
-      // toast.error("You need to be logged in to shorten links.");
-    }
-  };
+  // // Check if the user is authenticated
+  // const authUser = async () => {
+  //   try {
+  //     await axios.get("http://localhost:3000/api/me"); // This will check the user's auth status
+  //     setIsAuthenticated(true); // If the user is authenticated, set state to true
+  //   } catch (error) {
+  //     setIsAuthenticated(false); // If the user is not authenticated, set state to false
+  //     // toast.error("You need to be logged in to shorten links.");
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
     console.log(longUrl);
@@ -49,14 +51,10 @@ const HomePage = () => {
     }
   };
 
-  useEffect(() => {
-    authUser();
-  }, []);
-
   return (
     <>
       <ToastContainer className="" />
-      <div className=" mt-96">
+      <div className="">
         <div className="flex flex-col items-center text-center px-4 md:px-10">
           {/* Heading */}
           <h1 className="bg-gradient-to-tr from-[#144ee3] to-[#EB568E] bg-clip-text text-transparent text-4xl sm:text-5xl lg:text-6xl font-extrabold font-['Inter'] leading-tight lg:leading-[80px]">
@@ -114,9 +112,9 @@ const HomePage = () => {
             </div>
           )}
         </div>
-        <div className="w-full ">
+        {/* <div className="w-full ">
           <LinkPage />
-        </div>
+        </div> */}
       </div>
     </>
   );
