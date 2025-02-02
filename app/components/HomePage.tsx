@@ -1,7 +1,15 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import LinkPage from "./LinkPage";
 
 const HomePage = () => {
+  const [url, setUrl] = useState("");
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault(); // Prevent default form submission
+    console.log(url);
+  };
   return (
     <>
       <div className=" mt-96">
@@ -18,17 +26,26 @@ const HomePage = () => {
           </p>
 
           {/* Input Box */}
-          <div className="mt-6 sm:mt-10 w-full max-w-sm sm:max-w-lg lg:max-w-2xl h-14 sm:h-[76px] px-5 sm:pl-8 sm:pr-8 py-3 bg-[#181e29] rounded-full shadow-md border-4 border-[#144ee3]/10 flex items-center gap-4">
+          <form
+            onSubmit={handleSubmit}
+            className="mt-6 sm:mt-10 w-full max-w-sm sm:max-w-lg lg:max-w-2xl h-14 sm:h-[76px] px-5 sm:pl-8 sm:pr-8 py-3 bg-[#181e29] rounded-full shadow-md border-4 border-[#144ee3]/10 flex items-center gap-4"
+          >
             <span className="text-[#c9ced6] text-lg sm:text-xl">🔗</span>
             <input
-              type="text"
+              type="url"
+              required
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
               placeholder="Enter the link here"
               className="bg-transparent text-[#c9ced6] text-base font-light font-['Inter'] leading-7 outline-none w-full placeholder-[#c9ced6]/70"
             />
-            <button className="bg-[#144ee3] text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium">
+            <button
+              type="submit"
+              className="bg-[#144ee3] text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium"
+            >
               Shorten
             </button>
-          </div>
+          </form>
           <div className="text-center mt-6">
             <span className="text-[#c9ced6] text-sm font-light font-['Inter']">
               You can create{" "}

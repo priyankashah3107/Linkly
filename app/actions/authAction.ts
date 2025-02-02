@@ -1,11 +1,14 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import prisma from "@/utils/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { createUserSchema, loginUserSchema } from "@/utils/zod";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers"; // nextjs cookies api
+import { signTokenAndSetCookie } from "../utils/signTokenAndSetCookie";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
 if (!JWT_SECRET) {
@@ -47,11 +50,22 @@ export async function registerUser(request: Request) {
     });
 
     // Generate JWT token
-    const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
-      expiresIn: "30d",
-    });
+    // const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
+    //   expiresIn: "30d",
+    // });
 
-    const response = NextResponse.json(
+    // cookies().set({
+    //   name: "jwt",
+    //   value: token,
+    //   httpOnly: true,
+    //   path: "/",
+    //   maxAge: 30 * 24 * 60 * 60,
+    //   sameSite: "strict",
+    //   secure: process.env.NODE_ENV !== "development",
+    // });
+
+    const token = signTokenAndSetCookie(user.id, user.email);
+    return NextResponse.json(
       {
         message: "User created successfully",
         user: { email: user.email },
@@ -62,16 +76,16 @@ export async function registerUser(request: Request) {
 
     // Set JWT cookie
     // use Nextjs Cookie to set the headers not header to set the cookie
-    response.headers.set(
-      "Set-Cookie",
-      `jwt=${token}; HttpOnly; Path=/; Max-Age=${
-        30 * 24 * 60 * 60
-      }; SameSite=Strict; ${
-        process.env.NODE_ENV !== "development" ? "Secure" : ""
-      }`
-    );
+    // response.headers.set(
+    //   "Set-Cookie",
+    //   `jwt=${token}; HttpOnly; Path=/; Max-Age=${
+    //     30 * 24 * 60 * 60
+    //   }; SameSite=Strict; ${
+    //     process.env.NODE_ENV !== "development" ? "Secure" : ""
+    //   }`
+    // );
 
-    return response;
+    // return response;
   } catch (error) {
     console.error("Error in user registration:", error);
     return NextResponse.json(
@@ -97,28 +111,45 @@ export async function loginUser(request: Request) {
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user) {
+    // if (!user) {
+    //   return NextResponse.json(
+    //     { error: "Invalid Credentials" },
+    //     { status: 401 }
+    //   );
+    // }
+
+    // // check is password match
+
+    // const passwordMatch = await bcrypt.compare(password, user.password);
+
+    // if (!passwordMatch) {
+    //   return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
+    // }
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return NextResponse.json(
         { error: "Invalid Credentials" },
         { status: 401 }
       );
     }
 
-    // check is password match
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
-    }
-
     // generate the jwt token
 
-    const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
-      expiresIn: "30d",
-    });
+    // const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
+    //   expiresIn: "30d",
+    // });
 
-    const response = NextResponse.json(
+    // cookies().set({
+    //   name: "jwt",
+    //   value: token,
+    //   httpOnly: true,
+    //   path: "/",
+    //   maxAge: 30 * 24 * 60 * 60, // 30 days
+    //   sameSite: "strict",
+    //   secure: process.env.NODE_ENV !== "development",
+    // });
+    const token = signTokenAndSetCookie(user.id, user.email);
+    return NextResponse.json(
       { message: "Login Successfully", user: { email: user.email }, token },
       { status: 200 }
     );
@@ -132,15 +163,15 @@ export async function loginUser(request: Request) {
     // response.headers.set("Access-Control-Allow-Credentials", "true");
 
     // use Nextjs Cookie to set the headers not header to set the cookie
-    response.headers.set(
-      "Set-Cookie",
-      `jwt=${token}; HttpOnly; Path=/; Max-Age=${
-        30 * 24 * 60 * 60
-      }; SameSite=Strict; ${
-        process.env.NODE_ENV !== "development" ? "Secure" : ""
-      }`
-    );
-    return response;
+    // response.headers.set(
+    //   "Set-Cookie",
+    //   `jwt=${token}; HttpOnly; Path=/; Max-Age=${
+    //     30 * 24 * 60 * 60
+    //   }; SameSite=Strict; ${
+    //     process.env.NODE_ENV !== "development" ? "Secure" : ""
+    //   }`
+    // );
+    // return response;
   } catch (error) {
     console.log("Error While Signin the User", error);
     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
@@ -194,33 +225,78 @@ export async function loginUser(request: Request) {
 //     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
 //   }
 // }
+// export async function getMe(request: Request) {
+//   try {
+//     // get cookie from the jwt
+//     const cookie = request.headers.get("cookie");
+//     if (!cookie) {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     }
+//     const token = cookie
+//       .split("; ")
+//       .find((c) => c.startsWith("jwt="))
+//       ?.split("=")[1];
+//     if (!token) {
+//       return NextResponse.json({ error: "Unauthoried" }, { status: 401 });
+//     }
+//     // verify jwt
+//     const decode = jwt.verify(token, JWT_SECRET) as { userId: number };
+//     if (!decode || !decode.userId) {
+//       return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
+//     }
+//     // user from the db
+//     const user = await prisma.user.findUnique({
+//       where: { id: decode.userId },
+//       select: { id: true, email: true },
+//     });
+//     if (!user) {
+//       return NextResponse.json({ error: "User not found" }, { status: 404 });
+//     }
+//     return NextResponse.json({ user }, { status: 200 });
+//   } catch (error) {
+//     console.error("Error in getMe:", error);
+//     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//   }
+// }
+
+const ONE_DAY = 24 * 60 * 60; // 1 day in seconds
+
 export async function getMe(request: Request) {
   try {
-    // get cookie from the jwt
-    const cookie = request.headers.get("cookie");
-    if (!cookie) {
+    const cookieStore = cookies();
+    const token = cookieStore.get("jwt")?.value;
+
+    if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const token = cookie
-      .split("; ")
-      .find((c) => c.startsWith("jwt="))
-      ?.split("=")[1];
-    if (!token) {
-      return NextResponse.json({ error: "Unauthoried" }, { status: 401 });
-    }
-    // verify jwt
-    const decode = jwt.verify(token, JWT_SECRET) as { userId: number };
-    if (!decode || !decode.userId) {
+
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      userId: number;
+      email: string;
+      exp: number;
+    };
+
+    if (!decoded || !decoded.userId) {
       return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
     }
-    // user from the db
+
+    // Fetch user from DB
     const user = await prisma.user.findUnique({
-      where: { id: decode.userId },
+      where: { id: decoded.userId },
       select: { id: true, email: true },
     });
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    // Refresh token ONLY if less than 1 day left
+    const timeLeft = decoded.exp - Math.floor(Date.now() / 1000);
+    if (timeLeft < ONE_DAY) {
+      const newToken = signTokenAndSetCookie(user.id, user.email);
+      return NextResponse.json({ user, token: newToken }, { status: 200 });
+    }
+
     return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
     console.error("Error in getMe:", error);
@@ -237,8 +313,15 @@ export async function logoutUser() {
       { status: 200 }
     );
 
-    // clear the jwt cookie by setting max-age = 0
-    response.headers.set("Set-Cookie", "jwt=; HttpOnly; Path=/; Max-Age=0;");
+    cookies().set({
+      name: "jwt",
+      value: "",
+      httpOnly: true,
+      path: "/",
+      maxAge: 0, // Expire immediately
+      sameSite: "strict",
+      secure: process.env.NODE_ENV !== "development", // Secure in production
+    });
     return response;
   } catch (error) {
     console.log("error in Logout", error);

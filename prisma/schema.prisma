@@ -17,7 +17,9 @@ model User {
 }
 
 model Link {
-  id        Int         @id @default(autoincrement())
+  // id        Int         @id @default(autoincrement())
+  id        String         @id @default (cuid())
+
   longUrl   String
   shortUrl  String      @unique
   qrCode    String
@@ -25,13 +27,15 @@ model Link {
   expiresAt DateTime?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  visits Int  @default(0)
   clicks    Analytics[]
   user      User?       @relation(fields: [userId], references: [id])
 }
 
 model Analytics {
   id        Int      @id @default(autoincrement())
-  linkId    Int
+  // linkId    Int
+  linkId    String
   country   String?
   city      String?
   device    String?

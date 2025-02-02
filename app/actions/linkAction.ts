@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import { customAlphabet } from "nanoid";
 import QRCode from "qrcode";
 import { getUserFromToken } from "../utils/authHelper"; // Importing the helper function
+import { NextApiRequest, NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
@@ -56,58 +57,8 @@ export async function createShortLink(request: Request) {
 }
 
 // redirect to the user short to  longurl underthehood
-// export async function redirectToLongUrl(
-//   request: Request,
-//   context: { params: { shortId: string } }
-// ) {
-//   try {
-//     const { params } = context; // Extract params first
-//     if (!params || !params.shortId) {
-//       return NextResponse.json(
-//         { error: "Short ID is required" },
-//         { status: 400 }
-//       );
-//     }
 
-//     const shortId = params.shortId; // Now extract shortId
-//     console.log("Short ID:", shortId); // Debugging
-
-//     const link = await prisma.link.findUnique({
-//       where: { shortUrl: shortId }, // Query by shortId
-//     });
-
-//     console.log("link from the db", link);
-//     if (!link) {
-//       return NextResponse.json(
-//         { error: "Short URL not found" },
-//         { status: 404 }
-//       );
-//     }
-
-//     // Log analytics
-//     await prisma.analytics.create({
-//       data: {
-//         linkId: link.id,
-//         country: "Unknown",
-//         city: "Unknown",
-//         device: "Unknown",
-//         os: "Unknown",
-//         browser: "Unknown",
-//       },
-//     });
-
-//     // Redirect user to the original long URL
-//     return NextResponse.redirect(link.longUrl);
-//   } catch (error) {
-//     console.error("Error redirecting:", error);
-//     return NextResponse.json({ error: "Failed to redirect" }, { status: 500 });
-//   }
-// }
-
-// only authenticated user i get the shorurl
-// that means on the behalf of the userId user is able to get their all link which they created: analytics wale log k liye
-
-// get allshortUrl bas h
+// get allshortUrl this is for unauthenticated user
 export async function getAllShortUrl() {
   try {
     const shortUrls = await prisma.link.findMany({
@@ -137,7 +88,46 @@ export async function getAllShortUrl() {
   }
 }
 
+// export async function getShortUrlByUserId(request: Request) {
 // i want only authenticated user can access the short url
+// i want to redirect to the user when they click on the shorturl or qrcode i want to rediect to them original longurl
+//   // do i need to store as a map in the db which point to longurl as shorturl and qrcode so it is able to redirect when user is click in the short url or qrcode
+//   try {
+//     const { userId, error } = getUserFromToken(request);
+//     if (error) {
+//       return NextResponse.json({ error }, { status: 401 });
+//     }
+
+//     // when a signle user is created a many urls
+
+//     const shorturls = await prisma.link.findMany({
+//       where: { userId },
+//       select: {
+//         id: true,
+//         shortUrl: true,
+//         longUrl: true,
+//         qrCode: true,
+//         userId: true,
+//         createdAt: true,
+//       },
+//     });
+
+//     console.log("All Urls infomations of authenticated user", shorturls);
+
+//     const shortlink =
+
+//     return NextResponse.json(
+//       { messgae: "All urls info", shorturls, userId },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.log(error);
+//     return NextResponse.json(
+//       { message: "Internal server error", error },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function getShortUrlByUserId(request: Request) {
   try {
@@ -146,9 +136,9 @@ export async function getShortUrlByUserId(request: Request) {
       return NextResponse.json({ error }, { status: 401 });
     }
 
-    // when a signle user is created a many urls
-
+    // Fetch all URLs for the authenticated user
     const shorturls = await prisma.link.findMany({
+      where: { userId },
       select: {
         id: true,
         shortUrl: true,
@@ -159,10 +149,20 @@ export async function getShortUrlByUserId(request: Request) {
       },
     });
 
-    console.log("All Urls infomations of authenticated user", shorturls);
+    // console.log("All URLs information of authenticated user", shorturls);
+    // console.table(shorturls);
+    const link = shorturls.forEach((url) => {
+      console.log(`ID: ${url.id}`);
+      console.log(`Short URL: ${url.shortUrl}`);
+      console.log(`Long URL: ${url.longUrl}`);
+      console.log(`QR Code: ${url.qrCode}`);
+      console.log(`User ID: ${url.userId}`);
+      console.log(`Created At: ${url.createdAt}`);
+      console.log("----------------------"); // Separator for readability
+    });
 
     return NextResponse.json(
-      { messgae: "All urls info", shorturls, userId },
+      { message: "All URLs info", shorturls, userId },
       { status: 200 }
     );
   } catch (error) {
@@ -174,4 +174,25 @@ export async function getShortUrlByUserId(request: Request) {
   }
 }
 
-// do i need to store as a map in the db which point to longurl as shorturl and qrcode so it is able to redirect when user is click in the short url or qrcode
+export default async function handlerRedirect(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { shortId } = req.query;
+
+  try {
+    const link = await prisma.link.findUnique({
+      where: { shortUrl: `${process.env.BASE_URL}/${shortId}` },
+    });
+
+    if (link) {
+      // Increment the click count or log analytics here if needed
+      res.redirect(link.longUrl);
+    } else {
+      res.status(404).json({ error: "Link not found" });
+    }
+  } catch (error) {
+    console.error("Error redirecting:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

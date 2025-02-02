@@ -62,6 +62,7 @@ const LinkPage = () => {
             >
               <td className="px-6 py-4">
                 <Link
+                  target="_blank"
                   href={val.shortLink}
                   className="text-blue-400 hover:underline flex items-center gap-2 truncate"
                 >
@@ -71,6 +72,7 @@ const LinkPage = () => {
               </td>
               <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
                 <Link
+                  target="_blank"
                   href={val.longurl}
                   className="text-gray-400 hover:underline truncate"
                 >
