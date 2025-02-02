@@ -14,6 +14,8 @@ export async function GET(request: Request) {
 
     // Fetch all URLs for the authenticated user
     const shorturls = await prisma.link.findMany({
+      orderBy: { createdAt: "desc" }, // in reverse order
+      // take: 5,
       where: { userId },
       select: {
         id: true,

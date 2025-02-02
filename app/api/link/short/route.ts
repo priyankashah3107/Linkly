@@ -92,6 +92,7 @@ export async function POST(request: NextRequest) {
         shortUrl,
         qrCode,
         userId: userId || null, // If user is not authenticated, store as null
+        // clicks,
       },
     });
 
