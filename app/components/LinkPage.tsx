@@ -136,6 +136,7 @@ const LinkPage = () => {
                   <Link
                     target="_blank"
                     href={`/${val.shortUrl}`}
+                    href={val.shortUrl}
                     className="text-blue-400 hover:underline flex items-center gap-2 truncate"
                   >
                     {val.shortUrl}
@@ -152,7 +153,16 @@ const LinkPage = () => {
                   </Link>
                 </td>
                 <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                  <img src={val.qrCode} alt="QR Code" className="w-8 h-8" />
+                  <Link href={`/${val.qrCode}`} target="_blank">
+                    <Image
+                      src={val?.qrCode}
+                      alt="QR Code"
+                      className="w-8 h-8"
+                      width={10}
+                      height={10}
+                    />
+                  </Link>
+
                   <Download className="cursor-pointer" />
                 </td>
                 <td className="px-6 py-4 text-center hidden lg:table-cell">

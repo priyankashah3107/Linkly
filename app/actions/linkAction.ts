@@ -33,6 +33,7 @@ export async function createShortLink(request: Request) {
     const shortId = nanoid();
     const shortUrl = `${process.env.BASE_URL}/${shortId}`;
     const qrCode = await QRCode.toDataURL(shortUrl);
+    // const qrCode = await QRCode.toDataURL(longUrl);
 
     const newLink = await prisma.link.create({
       data: {
