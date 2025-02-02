@@ -95,88 +95,88 @@ export async function registerUser(request: Request) {
   }
 }
 
-export async function loginUser(request: Request) {
-  try {
-    const body = await request.json();
-    const validation = loginUserSchema.safeParse(body);
+// export async function loginUser(request: Request) {
+//   try {
+//     const body = await request.json();
+//     const validation = loginUserSchema.safeParse(body);
 
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: validation.error.errors },
-        { status: 400 }
-      );
-    }
+//     if (!validation.success) {
+//       return NextResponse.json(
+//         { error: validation.error.errors },
+//         { status: 400 }
+//       );
+//     }
 
-    const { email, password } = validation.data;
+//     const { email, password } = validation.data;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+//     const user = await prisma.user.findUnique({ where: { email } });
 
-    // if (!user) {
-    //   return NextResponse.json(
-    //     { error: "Invalid Credentials" },
-    //     { status: 401 }
-    //   );
-    // }
+//     // if (!user) {
+//     //   return NextResponse.json(
+//     //     { error: "Invalid Credentials" },
+//     //     { status: 401 }
+//     //   );
+//     // }
 
-    // // check is password match
+//     // // check is password match
 
-    // const passwordMatch = await bcrypt.compare(password, user.password);
+//     // const passwordMatch = await bcrypt.compare(password, user.password);
 
-    // if (!passwordMatch) {
-    //   return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
-    // }
+//     // if (!passwordMatch) {
+//     //   return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
+//     // }
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return NextResponse.json(
-        { error: "Invalid Credentials" },
-        { status: 401 }
-      );
-    }
+//     if (!user || !(await bcrypt.compare(password, user.password))) {
+//       return NextResponse.json(
+//         { error: "Invalid Credentials" },
+//         { status: 401 }
+//       );
+//     }
 
-    // generate the jwt token
+//     // generate the jwt token
 
-    // const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
-    //   expiresIn: "30d",
-    // });
+//     // const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
+//     //   expiresIn: "30d",
+//     // });
 
-    // cookies().set({
-    //   name: "jwt",
-    //   value: token,
-    //   httpOnly: true,
-    //   path: "/",
-    //   maxAge: 30 * 24 * 60 * 60, // 30 days
-    //   sameSite: "strict",
-    //   secure: process.env.NODE_ENV !== "development",
-    // });
-    const token = signTokenAndSetCookie(user.id, user.email);
-    return NextResponse.json(
-      { message: "Login Successfully", user: { email: user.email }, token },
-      { status: 200 }
-    );
+//     // cookies().set({
+//     //   name: "jwt",
+//     //   value: token,
+//     //   httpOnly: true,
+//     //   path: "/",
+//     //   maxAge: 30 * 24 * 60 * 60, // 30 days
+//     //   sameSite: "strict",
+//     //   secure: process.env.NODE_ENV !== "development",
+//     // });
+//     const token = signTokenAndSetCookie(user.id, user.email);
+//     return NextResponse.json(
+//       { message: "Login Successfully", user: { email: user.email }, token },
+//       { status: 200 }
+//     );
 
-    // Set jwt cookie
+//     // Set jwt cookie
 
-    // response.headers.set(
-    //   "Access-Control-Allow-Origin",
-    //   "http://localhost:3000/api/login"
-    // );
-    // response.headers.set("Access-Control-Allow-Credentials", "true");
+//     // response.headers.set(
+//     //   "Access-Control-Allow-Origin",
+//     //   "http://localhost:3000/api/login"
+//     // );
+//     // response.headers.set("Access-Control-Allow-Credentials", "true");
 
-    // use Nextjs Cookie to set the headers not header to set the cookie
-    // response.headers.set(
-    //   "Set-Cookie",
-    //   `jwt=${token}; HttpOnly; Path=/; Max-Age=${
-    //     30 * 24 * 60 * 60
-    //   }; SameSite=Strict; ${
-    //     process.env.NODE_ENV !== "development" ? "Secure" : ""
-    //   }`
-    // );
-    // return response;
-  } catch (error) {
-    console.log("Error While Signin the User", error);
-    return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
-  }
-}
+//     // use Nextjs Cookie to set the headers not header to set the cookie
+//     // response.headers.set(
+//     //   "Set-Cookie",
+//     //   `jwt=${token}; HttpOnly; Path=/; Max-Age=${
+//     //     30 * 24 * 60 * 60
+//     //   }; SameSite=Strict; ${
+//     //     process.env.NODE_ENV !== "development" ? "Secure" : ""
+//     //   }`
+//     // );
+//     // return response;
+//   } catch (error) {
+//     console.log("Error While Signin the User", error);
+//     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
+//   }
+// }
 
 // GetMe;
 
@@ -258,6 +258,42 @@ export async function loginUser(request: Request) {
 //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 //   }
 // }
+
+export async function loginUser(request: Request) {
+  try {
+    const body = await request.json();
+    const validation = loginUserSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const { email, password } = validation.data;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return NextResponse.json(
+        { error: "Invalid Credentials" },
+        { status: 401 }
+      );
+    }
+
+    // Generate JWT token and set it as a cookie
+    const token = await signTokenAndSetCookie(user.id, user.email);
+
+    return NextResponse.json(
+      { message: "Login Successfully", user: { email: user.email }, token },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("Error While Signing in the User", error);
+    return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
+  }
+}
 
 const ONE_DAY = 24 * 60 * 60; // 1 day in seconds
 
