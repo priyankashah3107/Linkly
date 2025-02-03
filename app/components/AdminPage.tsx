@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import AdminNavbar from "./AdminNavbar";
 import HomePage from "./HomePage";
 import LinkPage from "./LinkPage";
@@ -7,16 +7,21 @@ import useAuth from "../hooks/useAuth";
 
 const AdminPage = () => {
   const { isAuthenticated } = useAuth();
+  const [refreshPage, setRefreshPage] = useState(0); // this is when i create any new link page will refresh
+
+  const handleUrlShortened = () => {
+    setRefreshPage((prev) => prev + 1);
+  };
 
   return (
     <div>
       <AdminNavbar />
-      <HomePage />
-
+      <HomePage handleUrlShortened={handleUrlShortened} />
+      {/* sending function as a props */}
       {/* Conditionally Render LinkPage if User is Authenticated */}
       {isAuthenticated ? (
         <div className="w-full">
-          <LinkPage />
+          <LinkPage key={refreshPage} />
         </div>
       ) : (
         <div className="text-center mt-6 text-[#c9ced6] text-sm font-light">

@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { Copy, Download, QrCode } from "lucide-react";
+import { Check, Copy, Download, QrCode } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -50,6 +50,7 @@ interface ShortUrl {
   qrCode?: string;
   clicks?: number;
   createdAt: string;
+  visits: number;
 }
 
 // only authenticated user access the list of url
@@ -57,18 +58,33 @@ interface ShortUrl {
 // or use tanstack
 const LinkPage = () => {
   const [urls, setUrl] = useState<ShortUrl[]>([]);
+  const [copied, setCopied] = useState<boolean>(false);
+  const [copyUrl, setCopyurl] = useState<string>("");
   console.log("URLS", urls);
 
-  const fetchUrl = async () => {
+  const fetchUrl = async (code?: string) => {
     try {
       const response = await axios.get(
         "http://localhost:3000/api/link/short/getauth"
       );
-      console.log("FetchUrl Data", response.data);
+      // console.log("FetchUrl Data", response.data);
+      // const pri = response.data.shorturls;
       setUrl(response.data.shorturls);
+      // setUrl(pri);
     } catch (error) {
       console.error("Error while Fetching Urls", error);
     }
+  };
+
+  const handleCopyUrl = (shortUrl: string) => {
+    navigator.clipboard.writeText(shortUrl).then(() => {
+      setCopied(true);
+      setCopyurl(shortUrl);
+      setTimeout(() => {
+        setCopied(false);
+        setCopyurl("");
+      }, 3000);
+    });
   };
 
   useEffect(() => {
@@ -88,51 +104,14 @@ const LinkPage = () => {
               <th className="px-6 py-3 hidden lg:table-cell">Date</th>
             </tr>
           </thead>
-          {/* <tbody>
-          {linkData.map((val) => (
-            <tr
-              key={val.id}
-              className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
-            >
-              <td className="px-6 py-4">
-                <Link
-                  target="_blank"
-                  href={val.shortLink}
-                  className="text-blue-400 hover:underline flex items-center gap-2 truncate"
-                >
-                  {val.shortLink}
-                  <Copy className="w-4 h-4" />
-                </Link>
-              </td>
-              <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
-                <Link
-                  target="_blank"
-                  href={val.longurl}
-                  className="text-gray-400 hover:underline truncate"
-                >
-                  {val.longurl}
-                </Link>
-              </td>
-              <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                <QrCode className="cursor-pointer " />
-                <Download className="cursor-pointer " />
-              </td>
-              <td className="px-6 py-4 text-center hidden lg:table-cell">
-                {val.clicks}
-              </td>
-              <td className="px-6 py-4 text-center hidden lg:table-cell">
-                {val.date}
-              </td>
-            </tr>
-          ))}
-        </tbody> */}
+
           <tbody>
             {urls?.map((val) => (
               <tr
                 key={val.id}
                 className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
               >
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 flex flex-row gap-3">
                   <Link
                     target="_blank"
                     href={`/${val.shortUrl}`}
@@ -140,8 +119,15 @@ const LinkPage = () => {
                     className="text-blue-400 hover:underline flex items-center gap-2 truncate"
                   >
                     {val?.shortUrl}
-                    <Copy className="w-4 h-4" />
                   </Link>
+                  <button onClick={() => handleCopyUrl(val?.shortUrl)}>
+                    {/* <Copy className="w-4 h-4" /> */}
+                    {copied && copyUrl == val.shortUrl ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </button>
                 </td>
                 <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
                   <Link

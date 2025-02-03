@@ -6,7 +6,11 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../hooks/useAuth";
 
-const HomePage = () => {
+interface ShortenFormProps {
+  handleUrlShortened: () => void;
+}
+
+const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
   // const [url, setUrl] = useState("");
   const [longUrl, setlongUrl] = useState("");
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,6 +50,7 @@ const HomePage = () => {
       console.log("Reponse Long url", response?.data?.newLink?.longUrl);
 
       setlongUrl("");
+      handleUrlShortened(); // calling this function for refresh the page
     } catch (error) {
       console.log("Error shorting the url", error);
     }

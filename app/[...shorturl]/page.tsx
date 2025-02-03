@@ -12,8 +12,8 @@
 // }
 
 import prisma from "@/utils/db";
-import { link } from "fs";
 import { redirect } from "next/navigation";
+// import { NextResponse } from "next/server";
 import React from "react";
 
 interface RedirectPageProps {
@@ -54,5 +54,6 @@ export default async function RedirectPage({ params }: RedirectPageProps) {
     where: { id: url.id },
   });
   console.log("CountCLick is", countclicks);
-  redirect(url?.longUrl);
+  redirect(url.longUrl);
+  // return NextResponse.redirect(url.longUrl);
 }
