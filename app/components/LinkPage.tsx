@@ -136,20 +136,20 @@ const LinkPage = () => {
                   <Link
                     target="_blank"
                     href={`/${val.shortUrl}`}
-                    href={val.shortUrl}
+                    // href={val.shortUrl}
                     className="text-blue-400 hover:underline flex items-center gap-2 truncate"
                   >
-                    {val.shortUrl}
+                    {val?.shortUrl}
                     <Copy className="w-4 h-4" />
                   </Link>
                 </td>
                 <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
                   <Link
                     target="_blank"
-                    href={val.longUrl}
+                    href={val?.longUrl}
                     className="text-gray-400 hover:underline truncate"
                   >
-                    {val.longUrl}
+                    {val?.longUrl}
                   </Link>
                 </td>
                 <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
@@ -166,10 +166,11 @@ const LinkPage = () => {
                   <Download className="cursor-pointer" />
                 </td>
                 <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  {val.clicks ?? 0}
+                  {/* {val?.clicks ?? 0} */}
+                  {val?.visits ?? 0}
                 </td>
                 <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  {new Date(val.createdAt).toLocaleDateString("en-US", {
+                  {new Date(val?.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",

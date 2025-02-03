@@ -1,20 +1,10 @@
-import prisma from "@/utils/db";
-import { redirect } from "next/navigation";
+import React from "react";
 
 interface RedirectPageProps {
-  params: { shortUrl: string };
+  params: { shorturl: string };
 }
 
 export default async function RedirectPage({ params }: RedirectPageProps) {
-  const { shortUrl } = params;
-
-  const link = await prisma.link.findUnique({
-    where: { shortUrl: shortUrl },
-  });
-
-  if (!link) {
-    return <div>404- URL not found</div>;
-  }
-
-  redirect(link.longUrl);
+  const { shorturl } = await params;
+  return <div>{shorturl}</div>;
 }

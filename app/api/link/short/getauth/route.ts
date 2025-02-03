@@ -24,6 +24,7 @@ export async function GET(request: Request) {
         qrCode: true,
         userId: true,
         createdAt: true,
+        visits: true,
       },
     });
 
@@ -39,8 +40,23 @@ export async function GET(request: Request) {
       console.log("----------------------"); // Separator for readability
     });
 
+    // const countclicks = await prisma.link.findMany({
+    //   where: { id: shorturls[0].id },
+    // });
+    // console.log("CountCLick is", countclicks);
+
+    // await prisma.link.update({
+    //   where: {
+    //     id: shorturls[0].id,
+    //   },
+    //   data: { visits: { increment: 1 } },
+    // });
+    // console.log("Visits incremented for:", shorturls[0].id);
+
     return NextResponse.json(
       { message: "All URLs info", shorturls, userId },
+      // { message: "All URLs info", countclicks, userId },
+
       { status: 200 }
     );
   } catch (error) {
