@@ -5,6 +5,7 @@ import LinkPage from "./LinkPage";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../hooks/useAuth";
+import { Loader } from "lucide-react";
 
 interface ShortenFormProps {
   handleUrlShortened: () => void;
@@ -13,6 +14,7 @@ interface ShortenFormProps {
 const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
   // const [url, setUrl] = useState("");
   const [longUrl, setlongUrl] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -29,7 +31,7 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
     console.log(longUrl);
-
+    setLoading(true);
     if (!isAuthenticated) {
       toast.error("You need to log in to shorten links!");
       return;
@@ -53,6 +55,8 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
       handleUrlShortened(); // calling this function for refresh the page
     } catch (error) {
       console.log("Error shorting the url", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,9 +93,15 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
             />
             <button
               type="submit"
+              disabled={loading}
               className="bg-[#144ee3] text-white px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base font-medium"
             >
-              Shorten
+              {/* Shorten */}
+              {loading ? (
+                <Loader className="w-8 h-8 animate-spin " />
+              ) : (
+                "Shorten"
+              )}
             </button>
           </form>
           {/* <div className="text-center mt-6">

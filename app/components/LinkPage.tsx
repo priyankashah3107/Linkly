@@ -114,8 +114,8 @@ const LinkPage = () => {
                 <td className="px-6 py-4 flex flex-row gap-3">
                   <Link
                     target="_blank"
-                    href={`/${val.shortUrl}`}
-                    // href={val.shortUrl}
+                    // href={`/${val.shortUrl}`}
+                    href={val.shortUrl}
                     className="text-blue-400 hover:underline flex items-center gap-2 truncate"
                   >
                     {val?.shortUrl}
