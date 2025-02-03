@@ -44,10 +44,10 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
           },
         }
       );
-      console.log("Response is", response.data);
-      console.log("Reponse short url", response?.data?.newLink?.shortUrl);
-      console.log("Reponse QrCode url", response?.data?.newLink?.qrCode);
-      console.log("Reponse Long url", response?.data?.newLink?.longUrl);
+      // console.log("Response is", response.data);
+      // console.log("Reponse short url", response?.data?.newLink?.shortUrl);
+      // console.log("Reponse QrCode url", response?.data?.newLink?.qrCode);
+      // console.log("Reponse Long url", response?.data?.newLink?.longUrl);
 
       setlongUrl("");
       handleUrlShortened(); // calling this function for refresh the page

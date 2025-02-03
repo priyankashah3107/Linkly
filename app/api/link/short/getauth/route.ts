@@ -30,15 +30,15 @@ export async function GET(request: Request) {
 
     // console.log("All URLs information of authenticated user", shorturls);
     // console.table(shorturls);
-    const link = shorturls.forEach((url) => {
-      console.log(`ID: ${url.id}`);
-      console.log(`Short URL: ${url.shortUrl}`);
-      console.log(`Long URL: ${url.longUrl}`);
-      console.log(`QR Code: ${url.qrCode}`);
-      console.log(`User ID: ${url.userId}`);
-      console.log(`Created At: ${url.createdAt}`);
-      console.log("----------------------"); // Separator for readability
-    });
+    // const link = shorturls.forEach((url) => {
+    //   console.log(`ID: ${url.id}`);
+    //   console.log(`Short URL: ${url.shortUrl}`);
+    //   console.log(`Long URL: ${url.longUrl}`);
+    //   console.log(`QR Code: ${url.qrCode}`);
+    //   console.log(`User ID: ${url.userId}`);
+    //   console.log(`Created At: ${url.createdAt}`);
+    //   console.log("----------------------"); // Separator for readability
+    // });
 
     // const countclicks = await prisma.link.findMany({
     //   where: { id: shorturls[0].id },

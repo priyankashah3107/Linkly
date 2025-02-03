@@ -8,8 +8,58 @@ import { customAlphabet } from "nanoid";
 import QRCode from "qrcode";
 import { getUserFromToken } from "../utils/authHelper"; // Importing the helper function
 import { NextApiRequest, NextApiResponse } from "next";
-
+import validUrl from "valid-url";
 const prisma = new PrismaClient();
+
+// export async function createShortLink(request: Request) {
+//   try {
+//     // Get the userId from the token using the helper function
+//     const nanoid = customAlphabet(
+//       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+//       8
+//     );
+//     const { userId, error } = getUserFromToken(request);
+
+//     if (error) {
+//       // if user is unauthorized still they are able to crate the 5 links
+//       const linkCount = await prisma.link.count({
+//         where: { userId: null },
+//       });
+//       if (linkCount >= 5) {
+//         return NextResponse.json({ error }, { status: 401 });
+//       }
+//     }
+//     const { longUrl } = await request.json();
+//     const shortId = nanoid();
+//     const shortUrl = `${process.env.BASE_URL}/${shortId}`;
+//     const qrCode = await QRCode.toDataURL(shortUrl);
+//     // const qrCode = await QRCode.toDataURL(longUrl);
+
+//     const newLink = await prisma.link.create({
+//       data: {
+//         longUrl,
+//         shortUrl,
+//         qrCode,
+//         userId,
+//       },
+//     });
+
+//     return NextResponse.json({
+//       message: "Short URL created successfully",
+//       newLink,
+//     });
+//   } catch (error) {
+//     console.error("Error creating short URL:", error);
+//     return NextResponse.json(
+//       { error: "Failed to create short URL" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// redirect to the user short to  longurl underthehood
+
+// get allshortUrl this is for unauthenticated user
 
 export async function createShortLink(request: Request) {
   try {
@@ -21,26 +71,41 @@ export async function createShortLink(request: Request) {
     const { userId, error } = getUserFromToken(request);
 
     if (error) {
-      // if user is unauthorized still they are able to crate the 5 links
-      const linkCount = await prisma.link.count({
-        where: { userId: null },
-      });
+      // If user is unauthorized, limit to 5 links without userId
+      const linkCount = await prisma.link.count({ where: { userId: null } });
       if (linkCount >= 5) {
-        return NextResponse.json({ error }, { status: 401 });
+        return NextResponse.json(
+          { error: "Unauthorized. Link creation limit exceeded." },
+          { status: 401 }
+        );
       }
     }
+
+    // Get longUrl from the request body
     const { longUrl } = await request.json();
+
+    // Validate the provided longUrl
+    if (!validUrl.isUri(longUrl)) {
+      return NextResponse.json(
+        { error: "Invalid URL format" },
+        { status: 400 }
+      );
+    }
+
+    // Generate a unique short ID
     const shortId = nanoid();
     const shortUrl = `${process.env.BASE_URL}/${shortId}`;
-    const qrCode = await QRCode.toDataURL(shortUrl);
-    // const qrCode = await QRCode.toDataURL(longUrl);
 
+    // Generate the QR code for the shortUrl
+    const qrCode = await QRCode.toDataURL(longUrl);
+
+    // Save the new link record in the database
     const newLink = await prisma.link.create({
       data: {
         longUrl,
         shortUrl,
         qrCode,
-        userId,
+        userId: userId || null, // Associate with userId if available
       },
     });
 
@@ -57,9 +122,6 @@ export async function createShortLink(request: Request) {
   }
 }
 
-// redirect to the user short to  longurl underthehood
-
-// get allshortUrl this is for unauthenticated user
 export async function getAllShortUrl() {
   try {
     const shortUrls = await prisma.link.findMany({

@@ -139,11 +139,12 @@ const LinkPage = () => {
                   </Link>
                 </td>
                 <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                  <Link href={`/${val.qrCode}`} target="_blank">
+                  <Link href={`/image/${val.id}`} target="_blank">
                     <Image
-                      src={val?.qrCode}
+                      // src={val.qrCode}
+                      src={`/api/qrcode/${val.id}`}
                       alt="QR Code"
-                      className="w-8 h-8"
+                      className="w-8 h-8 object-cover "
                       width={10}
                       height={10}
                     />
