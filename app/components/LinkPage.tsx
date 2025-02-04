@@ -1,9 +1,10 @@
 "use client";
 import axios from "axios";
-import { Check, Copy, Download, QrCode } from "lucide-react";
+import { Check, Copy, Delete, Download, QrCode, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface ShortUrl {
   id: string;
@@ -50,6 +51,27 @@ const LinkPage = () => {
     });
   };
 
+  const handleDeleteLink = async (id: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/link/short/deletelink/${id}`
+      );
+      // toast.success("Link deleted successfully");
+
+      //       we need setUrl?
+      // My frontend holds a local state (urls) that contains the list of links.
+      // When a link is deleted from the backend, the frontend doesn't automatically know that the link is gone.
+      // setUrl((prevUrls) => prevUrls.filter((url) => url.id !== id)) manually updates the UI by removing the deleted link without requiring another API call.
+      // .filter() creates a new array that contains only the items that meet the given condition.
+
+      if (response.status === 200) {
+        setUrl((prevUrl) => prevUrl.filter((url) => url.id !== id));
+        toast.success("Link deleted successfully");
+      }
+    } catch (error) {
+      console.log("Error deleting the short Url", error);
+    }
+  };
   useEffect(() => {
     fetchUrl();
   }, []);
@@ -65,6 +87,7 @@ const LinkPage = () => {
               <th className="px-6 py-3">QR Code</th>
               <th className="px-6 py-3 hidden lg:table-cell">Clicks</th>
               <th className="px-6 py-3 hidden lg:table-cell">Date</th>
+              <th className="px-6 py-3 hidden lg:table-cell">Delete</th>
             </tr>
           </thead>
 
@@ -138,6 +161,12 @@ const LinkPage = () => {
                     month: "short",
                     day: "numeric",
                   })}
+                </td>
+                {/* delte the link  */}
+                <td className="px-6 py-4 text-center hidden lg:table-cell">
+                  <button onClick={() => handleDeleteLink(val.id)}>
+                    <Trash className="text-red-300 hover:text-red-600 w-6 h-6" />
+                  </button>
                 </td>
               </tr>
             ))}

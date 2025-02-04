@@ -259,3 +259,52 @@ export default async function handlerRedirect(
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export async function deleteShortUrl(request: Request) {
+  try {
+    const { userId, error } = getUserFromToken(request);
+    if (error) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Parse request body to get the shortUrl
+    const { shortUrl } = await request.json();
+    if (!shortUrl) {
+      return NextResponse.json(
+        { error: "Short URL is required" },
+        { status: 400 }
+      );
+    }
+
+    // Find the link in the database that was created by this user
+    const link = await prisma.link.findFirst({
+      where: {
+        shortUrl,
+        userId, // Ensure the link belongs to the authenticated user
+      },
+    });
+
+    if (!link) {
+      return NextResponse.json(
+        { error: "Short URL not found or not created by you" },
+        { status: 404 }
+      );
+    }
+
+    // Delete the short URL
+    await prisma.link.delete({
+      where: { id: link.id },
+    });
+
+    return NextResponse.json(
+      { message: "Short URL deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting short URL:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
