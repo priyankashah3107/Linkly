@@ -1,10 +1,11 @@
 "use client";
 import axios from "axios";
-import { Check, Copy, Delete, Download, QrCode, Trash } from "lucide-react";
+import { BarChart2, Check, Copy, Download, Router, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface ShortUrl {
   id: string;
@@ -23,6 +24,8 @@ const LinkPage = () => {
   const [urls, setUrl] = useState<ShortUrl[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
   const [copyUrl, setCopyurl] = useState<string>("");
+  const [analyticsData, setAnalyticsData] = useState<Record<string, any>>({});
+  const router = useRouter();
 
   console.log("URLS", urls);
 
@@ -49,6 +52,33 @@ const LinkPage = () => {
         setCopyurl("");
       }, 3000);
     });
+  };
+
+  const handleClick = async (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    linkId: string
+  ) => {
+    event.preventDefault(); // Prevent the default link behavior
+    const analyticsData = await fetchAnalytics(linkId);
+    if (analyticsData) {
+      // Redirect to the desired URL after fetching the data
+      router.push(`/admin/analytics/${linkId}`);
+      // Replace with your desired redirect URL
+    }
+  };
+
+  const fetchAnalytics = async (linkId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/link/analytics?id=${linkId}`
+      );
+      console.log("akjfhakdfhjadkfjhadkf", response.data);
+      setAnalyticsData((prev) => ({ ...prev, [linkId]: response.data }));
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      return null;
+    }
   };
 
   const handleDeleteLink = async (id: string) => {
@@ -88,6 +118,7 @@ const LinkPage = () => {
               <th className="px-6 py-3 hidden lg:table-cell">Clicks</th>
               <th className="px-6 py-3 hidden lg:table-cell">Date</th>
               <th className="px-6 py-3 hidden lg:table-cell">Delete</th>
+              <th>Analytics</th>
             </tr>
           </thead>
 
@@ -167,6 +198,14 @@ const LinkPage = () => {
                   <button onClick={() => handleDeleteLink(val.id)}>
                     <Trash className="text-red-300 hover:text-red-600 w-6 h-6" />
                   </button>
+                </td>
+                <td className="px-6 py-4 text-center hidden lg:table-cell">
+                  <Link
+                    href={`/admin/analytics/${val.id}`}
+                    onClick={(event) => handleClick(event, val.id)}
+                  >
+                    <BarChart2 />
+                  </Link>
                 </td>
               </tr>
             ))}
