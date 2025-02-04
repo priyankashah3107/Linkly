@@ -103,8 +103,17 @@ const LinkPage = () => {
                 </td>
                 <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
                   {/* <Link href={`/image/${val.id}`} target="_blank"> */}
+                  {/* <Link
+                    href={
+                      `/image/${val.qrCode}` ||
+                      "https://github.com/priyankashah3107"
+                    }
+                    target="_blank"
+                  > */}
                   <Link
-                    href={val.qrCode || "https://github.com/priyankashah3107"}
+                    href={
+                      `${val.qrCode}` || "https://github.com/priyankashah3107"
+                    }
                     target="_blank"
                   >
                     <Image

@@ -148,6 +148,9 @@ export default async function RedirectQrCode({ params }: RedirectPagePros) {
     data: { visits: { increment: 1 } },
   });
 
+  // headers().set("Location", url.longUrl);
+
   redirect(url.longUrl);
+
   // return <div>{shorturl}</div>;
 }

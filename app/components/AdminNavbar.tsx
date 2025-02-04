@@ -3,6 +3,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
 import { BarChart2, LogOut, User, ChevronDown } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface AuthUser {
   email?: string;
@@ -19,9 +21,20 @@ const AdminNavbar: React.FC<AuthUser> = () => {
   const router = useRouter();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    // Implement logout logic
-    router.push("/auth/login");
+  const handleLogout = async () => {
+    try {
+      const logout = await axios.delete("http://localhost:3000/api/logout");
+
+      toast.success("Successfully Logged out ✨");
+
+      // After logout, update auth state if needed
+      // setIsAuthenticated(false); // For example, update your authentication state to 'false'
+
+      router.push("/auth/login");
+    } catch (error) {
+      toast.error("Error while logged out");
+      console.log("Error while logged out", error);
+    }
   };
 
   const toggleProfileDropdown = () => {

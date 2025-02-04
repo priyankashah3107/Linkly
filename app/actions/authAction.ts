@@ -182,7 +182,7 @@ export async function logoutUser() {
       { status: 200 }
     );
 
-    cookies().set({
+    (await cookies()).set({
       name: "jwt",
       value: "",
       httpOnly: true,
