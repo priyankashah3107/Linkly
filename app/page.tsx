@@ -18,40 +18,60 @@
 // };
 
 // export default Page;
+"use client"; // If using Next.js App Router
 
 import React from "react";
-
 import Navbar from "./components/Navbar";
 import Image from "next/image";
 import HomePage from "./components/HomePage";
+import useAuth from "./hooks/useAuth";
+import AdminPage from "./components/AdminPage";
 
-const page = () => {
+interface ShortenFormProps {
+  handleUrlShortened: () => void;
+}
+
+const Page: React.FC<ShortenFormProps> = ({ handleUrlShortened }) => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
-      <div className="relative w-full h-screen ">
-        <Image
-          src={"/Swirl.svg"}
-          alt="img"
-          width={100}
-          height={100}
-          className="w-full h-full absolute"
-        />
-        <Image
-          src={"/Cubes.svg"}
-          alt="cubes"
-          width={100}
-          height={100}
-          className="w-full h-full "
-        />
-        <div className="absolute top-0 left-0 w-full z-[60]">
-          <Navbar />
+      {isAuthenticated ? (
+        <AdminPage />
+      ) : (
+        <div className="relative w-full h-screen">
+          {/* Background Images */}
+          <Image
+            src={"/Swirl.svg"}
+            alt="img"
+            width={100}
+            height={100}
+            className="w-full h-full absolute"
+            // layout="fill"
+          />
+          <Image
+            src="/Cubes.svg"
+            alt="Background cubes"
+            // layout="fill"
+            objectFit="cover"
+            width={100}
+            height={100}
+            className="w-full h-full "
+          />
+
+          {/* Navbar */}
+          <div className="absolute top-0 left-0 w-full z-50">
+            <Navbar />
+          </div>
+
+          {/* HomePage Centered */}
+          <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-40">
+            <HomePage handleUrlShortened={handleUrlShortened} />
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-40">
-        <HomePage />
-      </div>
+      )}
     </>
   );
 };
 
-export default page;
+export default Page;

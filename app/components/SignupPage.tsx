@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { signIn } from "next-auth/react";
 import { Eye, Github, Mail } from "lucide-react";
 import Image from "next/image";
@@ -8,16 +8,23 @@ import Link from "next/link";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import useAuth from "../hooks/useAuth";
 
 export default function Signup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/admin");
+    }
+  }, [isAuthenticated, router]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -35,15 +42,22 @@ export default function Signup() {
       );
       if (response.status === 201) {
         toast.success("Registration Successful! Welcome to the platform!");
+        if (response.status === 201) {
+          toast.success("Registration Successful!");
+          router.push("/admin"); // Redirect immediately
+        }
         // router.push("/");
       }
       console.log("Response is", response.data);
-      console.log("FormData from SignupPage", formData);
+      console.log("FormData from SignupPage", formData, {
+        withCredentials: true,
+      });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setError(error.response.data.error || "Something went wrong");
       } else {
         setError("Failed to register. Please try again");
+        toast.error("Registration Failed! try again");
       }
 
       console.log("Error During Signup", error);
