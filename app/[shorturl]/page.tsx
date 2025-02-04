@@ -8,7 +8,9 @@ interface RedirectPagePros {
 export default async function RedirectPage({ params }: RedirectPagePros) {
   const { shorturl } = params;
   const url = await prisma.link.findUnique({
-    where: { shortUrl: `http://localhost:3000/${shorturl}` },
+    // where: { shortUrl: `http://localhost:3000/${shorturl}` },
+    where: { shortUrl: `${process.env.BASE_URL}/${shorturl}` },
+
     select: { id: true, qrCode: true, longUrl: true, visits: true },
   });
 

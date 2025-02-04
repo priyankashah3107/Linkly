@@ -5,44 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const linkData = [
-  {
-    id: 1,
-    shortLink: "https://linkly.com/Bn41aCOlnxj",
-    longurl: "https://www.twitter.com/tweets/8erelCoihu/",
-    clicks: "1313",
-    date: "Oct - 10 - 2023",
-  },
-  {
-    id: 2,
-    shortLink: "https://linkly.com/Bn41aCOlnxj",
-    longurl: "https://www.twitter.com/tweets/8erelCoihu/",
-    clicks: "1313",
-    date: "Oct - 10 - 2023",
-  },
-  {
-    id: 3,
-    shortLink: "https://linkly.com/Bn41aCOlnxj",
-    longurl: "https://www.twitter.com/tweets/8erelCoihu/",
-    clicks: "1313",
-    date: "Oct - 10 - 2023",
-  },
-  {
-    id: 4,
-    shortLink: "https://linkly.com/Bn41aCOlnxj",
-    longurl: "https://www.twitter.com/tweets/8erelCoihu/",
-    clicks: "1313",
-    date: "Oct - 10 - 2023",
-  },
-  {
-    id: 5,
-    shortLink: "https://linkly.com/Bn41aCOlnxj",
-    longurl: "https://www.twitter.com/tweets/8erelCoihu/",
-    clicks: "1313",
-    date: "Oct - 10 - 2023",
-  },
-];
-
 interface ShortUrl {
   id: string;
   shortUrl: string;
@@ -60,6 +22,7 @@ const LinkPage = () => {
   const [urls, setUrl] = useState<ShortUrl[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
   const [copyUrl, setCopyurl] = useState<string>("");
+
   console.log("URLS", urls);
 
   const fetchUrl = async (code?: string) => {
@@ -139,10 +102,14 @@ const LinkPage = () => {
                   </Link>
                 </td>
                 <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                  <Link href={`/image/${val.id}`} target="_blank">
+                  {/* <Link href={`/image/${val.id}`} target="_blank"> */}
+                  <Link
+                    href={val.qrCode || "https://github.com/priyankashah3107"}
+                    target="_blank"
+                  >
                     <Image
-                      // src={val.qrCode}
-                      src={`/api/qrcode/${val.id}`}
+                      src={val.qrCode || "https://github.com/priyankashah3107"}
+                      // src={`/api/qrcode/${val.id}`}
                       alt="QR Code"
                       className="w-8 h-8 object-cover "
                       width={10}
