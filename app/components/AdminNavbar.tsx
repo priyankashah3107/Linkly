@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
-import { BarChart2, LogOut, User, ChevronDown } from "lucide-react";
+import {
+  BarChart2,
+  LogOut,
+  User,
+  ChevronDown,
+  DollarSignIcon,
+} from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -72,13 +78,13 @@ const AdminNavbar: React.FC<AuthUser> = () => {
                 <div className="py-1">
                   <button
                     onClick={() => {
-                      router.push("/admin/analytics");
+                      router.push("/billing");
                       setIsProfileDropdownOpen(false);
                     }}
                     className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100"
                   >
-                    <BarChart2 className="mr-2 w-5 h-5" />
-                    Email Analytics
+                    <DollarSignIcon className="mr-2 w-5 h-5" />
+                    Billing
                   </button>
                   <button
                     onClick={() => {
