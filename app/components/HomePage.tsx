@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import LinkPage from "./LinkPage";
+import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import useAuth from "../hooks/useAuth";
@@ -46,6 +45,7 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
           },
         }
       );
+      console.log("Homepage is Resonse", response.data);
       // console.log("Response is", response.data);
       // console.log("Reponse short url", response?.data?.newLink?.shortUrl);
       // console.log("Reponse QrCode url", response?.data?.newLink?.qrCode);

@@ -15,7 +15,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import React, { ReactNode } from "react";
 
 type ButtonSize = "small" | "medium" | "large";
@@ -44,10 +44,10 @@ ButtonProps) => {
     }
   };
 
-  const onClick = () => {
-    const router = useRouter();
-    router.push("/api/signup");
-  };
+  // const onClick = () => {
+  //   const router = useRouter();
+  //   router.push("/api/signup");
+  // };
 
   const baseClasses =
     "bg-[#144ee3] text-white rounded-[48px] shadow-[10px_9px_22px_0px_rgba(20,78,227,0.38)] border border-[#144ee3] justify-center items-center inline-flex cursor-pointer";

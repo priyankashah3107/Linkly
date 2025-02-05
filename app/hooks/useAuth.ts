@@ -39,6 +39,7 @@ const useAuth = () => {
         setIsAuthenticated(true); // Mark as authenticated
       }
     } catch (error) {
+      console.log(error);
       setIsAuthenticated(false);
       setUser(null); // Clear user data if not authenticated
     }

@@ -8,7 +8,7 @@ import Link from "next/link";
 import axios from "axios";
 
 import { ToastContainer, toast } from "react-toastify";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
 export default function LoginPage() {
   const router = useRouter();
@@ -137,7 +137,7 @@ export default function LoginPage() {
       </button>
 
       <p className="text-center  text-sm mt-1">
-        Don't have an account{" "}
+        Do not have an account{" "}
         <Link href={"/auth/signup"} className="underline ">
           Sign Up
         </Link>

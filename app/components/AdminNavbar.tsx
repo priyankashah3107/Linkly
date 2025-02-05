@@ -2,13 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
-import {
-  BarChart2,
-  LogOut,
-  User,
-  ChevronDown,
-  DollarSignIcon,
-} from "lucide-react";
+import { LogOut, User, ChevronDown, DollarSignIcon } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -29,7 +23,7 @@ const AdminNavbar: React.FC<AuthUser> = () => {
 
   const handleLogout = async () => {
     try {
-      const logout = await axios.delete("http://localhost:3000/api/logout");
+      await axios.delete("http://localhost:3000/api/logout");
 
       toast.success("Successfully Logged out ✨");
 

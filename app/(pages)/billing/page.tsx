@@ -2,9 +2,9 @@
 import React from "react";
 import { Check } from "lucide-react";
 
-const handlePurchase = (e: any) => {
-  e.preventDefault();
-};
+// const handlePurchase = (e: any) => {
+//   e.preventDefault();
+// };
 
 const PricingCard = () => {
   const tiers = [
@@ -108,7 +108,7 @@ const PricingCard = () => {
 
             <div className="mt-8">
               <button
-                onClick={handlePurchase}
+                // onClick={handlePurchase}
                 className={`w-full py-3 px-4 rounded-lg  transition-all duration-300 font-semibold
                   ${
                     tier.popular

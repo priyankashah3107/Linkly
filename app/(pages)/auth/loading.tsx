@@ -1,4 +1,4 @@
-export default function () {
+export default function AuthLoading() {
   return (
     <div
       className="bg-[rgba(255,255,255,0.025)] rounded-[12px] shadow-[0_2px_4px_rgba(0,0,0,0.04)] 

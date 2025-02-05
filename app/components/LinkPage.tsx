@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { BarChart2, Check, Copy, Download, Router, Trash } from "lucide-react";
+import { BarChart2, Check, Copy, Download, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -24,12 +24,14 @@ const LinkPage = () => {
   const [urls, setUrl] = useState<ShortUrl[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
   const [copyUrl, setCopyurl] = useState<string>("");
-  const [analyticsData, setAnalyticsData] = useState<Record<string, any>>({});
+  const [analyticsData, setAnalyticsData] = useState<Record<string, string>>(
+    {}
+  );
   const router = useRouter();
 
   console.log("URLS", urls);
 
-  const fetchUrl = async (code?: string) => {
+  const fetchUrl = async () => {
     try {
       const response = await axios.get(
         "http://localhost:3000/api/link/short/getauth"

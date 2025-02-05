@@ -1,16 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AdminNavbar from "./AdminNavbar";
 import HomePage from "./HomePage";
 import LinkPage from "./LinkPage";
 import useAuth from "../hooks/useAuth";
 import LoginPage from "./LoginPage";
-import { useRouter } from "next/navigation";
 
 const AdminPage = () => {
   const { isAuthenticated } = useAuth();
   const [refreshPage, setRefreshPage] = useState(0); // this is when i create any new link page will refresh
-  const router = useRouter();
 
   const handleUrlShortened = () => {
     setRefreshPage((prev) => prev + 1);

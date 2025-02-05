@@ -15,6 +15,7 @@ export async function authenticateRequest(request: Request) {
     // Attach the decoded user info to the request or return success
     return decoded;
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error: "Invalid Token" }, { status: 401 });
   }
 }
