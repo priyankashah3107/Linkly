@@ -56,6 +56,7 @@ interface AnalyticsData {
   country: string;
   city: string;
   device: string;
+  browser: string; // Added browser field
   timestamp: string;
 }
 
@@ -89,7 +90,7 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-lg font-medium text-white">
-          <Loader className="w-8 h-8 animate-spin " />
+          <Loader className="w-8 h-8 animate-spin" />
         </div>
       </div>
     );
@@ -110,7 +111,6 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     []
   );
 
-  console.log("Analtics Daily Visits", dailyVisits);
   // Prepare device distribution data
   const deviceData = Object.entries(
     analytics.reduce((acc: { [key: string]: number }, curr) => {
@@ -119,7 +119,14 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     }, {})
   ).map(([name, value]) => ({ name, value }));
 
-  console.log("DeviceData", deviceData);
+  // Prepare browser distribution data
+  const browserData = Object.entries(
+    analytics.reduce((acc: { [key: string]: number }, curr) => {
+      const browser = curr.browser || "Unknown";
+      acc[browser] = (acc[browser] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value }));
 
   // Prepare country distribution data
   const countryData = Object.entries(
@@ -130,19 +137,18 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     }, {})
   ).map(([name, value]) => ({ name, value }));
 
-  console.log("CountryData", countryData);
   return (
     <div className="p-6 space-y-6 bg-[#09132a] text-white">
-      <h2 className="text-3xl font-bold ">Link Analytics</h2>
+      <h2 className="text-3xl font-bold">Link Analytics</h2>
 
       {/* Stats Overview */}
       <div className="grid gap-4 bg-[#09132a] md:grid-cols-2 lg:grid-cols-4">
-        <div className=" p-6 rounded-lg shadow-sm">
+        <div className="p-6 rounded-lg shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium ">Total Visits</h3>
+            <h3 className="text-sm font-medium">Total Visits</h3>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 "
+              className="h-5 w-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -157,9 +163,9 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
           <p className="text-2xl font-bold mt-2">{analytics.length}</p>
         </div>
 
-        <div className=" p-6 rounded-lg shadow-sm">
+        <div className="p-6 rounded-lg shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium ">Unique Devices</h3>
+            <h3 className="text-sm font-medium">Unique Devices</h3>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -173,14 +179,37 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
               <line x1="12" y1="17" x2="12" y2="21" />
             </svg>
           </div>
-          <p className="text-2xl font-bold  mt-2">
+          <p className="text-2xl font-bold mt-2">
             {new Set(analytics.map((a) => a.device)).size}
           </p>
         </div>
 
-        <div className=" p-6 rounded-lg shadow-sm">
+        <div className="p-6 rounded-lg shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium ">Unique Countries</h3>
+            <h3 className="text-sm font-medium">Unique Browsers</h3>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M3 3h18v18H3z" />
+              <path d="M9 3v18" />
+              <path d="M15 3v18" />
+              <path d="M3 9h18" />
+              <path d="M3 15h18" />
+            </svg>
+          </div>
+          <p className="text-2xl font-bold mt-2">
+            {new Set(analytics.map((a) => a.browser || "Unknown")).size}
+          </p>
+        </div>
+
+        <div className="p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium">Unique Countries</h3>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -194,50 +223,60 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
             </svg>
           </div>
-          <p className="text-2xl font-bold  mt-2">
+          <p className="text-2xl font-bold mt-2">
             {new Set(analytics.map((a) => a.country || "Unknown")).size}
           </p>
         </div>
-
-        <div className=" p-6 rounded-lg shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium ">Unique Cities</h3>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <p className="text-2xl font-bold mt-2">
-            {new Set(analytics.map((a) => a.city || "Unknown")).size}
-          </p>
-        </div>
       </div>
 
-      {/* Visitors Chart */}
-      <div className=" p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium  mb-4">Daily Visits</h3>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dailyVisits}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="visits" fill="#4f46e5" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Device and Country Distribution */}
+      {/* Charts Grid */}
       <div className="grid gap-4 md:grid-cols-2">
-        <div className=" p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium  mb-4">Device Distribution</h3>
+        {/* Daily Visits Chart */}
+        <div className="p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Daily Visits</h3>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dailyVisits}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="visits" fill="#4f46e5" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Browser Distribution */}
+        <div className="p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Browser Distribution</h3>
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={browserData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label={(entry) => `${entry.name}: ${entry.value}`}
+                >
+                  {browserData.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Device Distribution */}
+        <div className="p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Device Distribution</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -263,8 +302,9 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
           </div>
         </div>
 
-        <div className=" p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium  mb-4">Country Distribution</h3>
+        {/* Country Distribution */}
+        <div className="p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-medium mb-4">Country Distribution</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -292,8 +332,8 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
       </div>
 
       {/* Recent Visitors */}
-      <div className=" p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium  mb-4">Recent Visitors</h3>
+      <div className="p-6 rounded-lg shadow-sm">
+        <h3 className="text-lg font-medium mb-4">Recent Visitors</h3>
         <div className="space-y-4">
           {analytics.slice(0, 5).map((visit) => (
             <div
@@ -302,13 +342,16 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm font-medium ">Device: {visit.device}</p>
-                  <p className="text-sm  mt-1">
+                  <p className="text-sm font-medium">Device: {visit.device}</p>
+                  <p className="text-sm mt-1">
+                    Browser: {visit.browser || "Unknown"}
+                  </p>
+                  <p className="text-sm mt-1">
                     Location: {visit.country || "Unknown"},{" "}
                     {visit.city || "Unknown"}
                   </p>
                 </div>
-                <p className="text-sm ">
+                <p className="text-sm">
                   {new Date(visit.timestamp).toLocaleString()}
                 </p>
               </div>
