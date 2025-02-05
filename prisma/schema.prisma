@@ -29,6 +29,10 @@ model Link {
   updatedAt DateTime    @updatedAt
   visits Int  @default(0)
   clicks    Analytics[]
+
+  // CASCADE DELETE: When a Link is deleted, its associated Analytics entries will be deleted
+  // clicks    Analytics[] @relation(onDelete: Cascade)
+
   user      User?       @relation(fields: [userId], references: [id])
 }
 
@@ -42,5 +46,7 @@ model Analytics {
   os        String?
   browser   String?
   timestamp DateTime @default(now())
-  Link      Link     @relation(fields: [linkId], references: [id])
+  // Link      Link     @relation(fields: [linkId], references: [id])
+   // Reference to Link with cascade delete
+  Link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
 }

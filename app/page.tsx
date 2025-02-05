@@ -65,7 +65,7 @@ const Page: React.FC<ShortenFormProps> = ({ handleUrlShortened }) => {
           </div>
 
           {/* HomePage Centered */}
-          <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-40">
+          <div className="flex justify-center items-center absolute top-0 left-0 w-full h-full z-60">
             <HomePage handleUrlShortened={handleUrlShortened} />
           </div>
         </div>

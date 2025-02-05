@@ -54,6 +54,30 @@ const LinkPage = () => {
     });
   };
 
+  const handleDownloadQrCode = (qrCodeUrl?: string) => {
+    if (!qrCodeUrl) {
+      toast.error("No QR Code available to download");
+      return;
+    }
+
+    try {
+      // Create an anchor element
+      const link = document.createElement("a");
+
+      // Ensure qrCodeUrl is correctly assigned
+      link.href = qrCodeUrl;
+      link.download = "qrcode.png"; // Set filename
+
+      // Append to body, trigger download, then remove it
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading QR code:", error);
+      toast.error("Failed to download QR Code.");
+    }
+  };
+
   const handleClick = async (
     event: React.MouseEvent<HTMLAnchorElement>,
     linkId: string
@@ -180,7 +204,10 @@ const LinkPage = () => {
                     />
                   </Link>
 
-                  <Download className="cursor-pointer" />
+                  <Download
+                    className="cursor-pointer"
+                    onClick={() => handleDownloadQrCode(val.qrCode)}
+                  />
                 </td>
                 <td className="px-6 py-4 text-center hidden lg:table-cell">
                   {/* {val?.clicks ?? 0} */}
@@ -203,6 +230,7 @@ const LinkPage = () => {
                   <Link
                     href={`/admin/analytics/${val.id}`}
                     onClick={(event) => handleClick(event, val.id)}
+                    target="_blank"
                   >
                     <BarChart2 />
                   </Link>

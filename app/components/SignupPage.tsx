@@ -40,26 +40,30 @@ export default function Signup() {
         "http://localhost:3000/api/signup",
         formData
       );
+
       if (response.status === 201) {
         toast.success("Registration Successful! Welcome to the platform!");
-        if (response.status === 201) {
-          toast.success("Registration Successful!");
-          router.push("/admin"); // Redirect immediately
-        }
-        // router.push("/");
+        router.push("/admin"); // Redirect immediately
+      } else {
+        toast.error(error);
       }
-      console.log("Response is", response.data);
-      console.log("FormData from SignupPage", formData, {
-        withCredentials: true,
-      });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        setError(error.response.data.error || "Something went wrong");
-      } else {
-        setError("Failed to register. Please try again");
-        toast.error("Registration Failed! try again");
-      }
+        const errorResponse = error.response.data.error;
 
+        // Check if the error is for password
+        const passwordError = errorResponse.find(
+          (err: any) => err.path[0] === "password"
+        );
+
+        if (passwordError) {
+          toast.error(passwordError.message); // Show password error in toast
+        } else {
+          toast.error(errorResponse || "Something went wrong");
+        }
+      } else {
+        toast.error("Registration failed. Please try again");
+      }
       console.log("Error During Signup", error);
     } finally {
       setLoading(false);
