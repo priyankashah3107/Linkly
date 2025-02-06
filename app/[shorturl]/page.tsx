@@ -115,8 +115,16 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import axios from "axios";
 
-interface RedirectPageProps {
-  params: { shorturl: string };
+// interface RedirectPageProps {
+//   params: { shorturl: string };
+// }
+
+// interface RedirectPageProps {
+//   params: Promise<{ shorturl: string }>;
+// }
+export interface PageProps {
+  params?: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 const isPrivateIP = (ip: string) => {
@@ -130,7 +138,12 @@ const isPrivateIP = (ip: string) => {
   );
 };
 
-export default async function RedirectPage({ params }: RedirectPageProps) {
+// export default async function RedirectPage({ params }: RedirectPageProps) {
+export default async function PageProps({
+  params,
+}: {
+  params: { shorturl: string };
+}) {
   const { shorturl } = params;
   console.log("0329035u24jkdkgn", shorturl);
   console.log("ShortUrl [shorturl]/page.tsx", shorturl);

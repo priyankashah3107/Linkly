@@ -10,6 +10,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
 
+interface ValidationError {
+  path: string[];
+  message: string;
+}
+
 export default function Signup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -53,7 +58,7 @@ export default function Signup() {
 
         // Check if the error is for password
         const passwordError = errorResponse.find(
-          (err: any) => err.path[0] === "password"
+          (err: ValidationError) => err.path[0] === "password"
         );
 
         if (passwordError) {

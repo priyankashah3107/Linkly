@@ -233,6 +233,11 @@ const LinkPage = () => {
                     href={`/admin/analytics/${val.id}`}
                     onClick={(event) => handleClick(event, val.id)}
                     target="_blank"
+                    title={
+                      analyticsData[val.id]
+                        ? `Visits: ${analyticsData[val.id]}`
+                        : "Loading analytics..."
+                    }
                   >
                     <BarChart2 />
                   </Link>
