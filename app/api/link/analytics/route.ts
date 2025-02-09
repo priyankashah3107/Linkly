@@ -79,8 +79,8 @@ export async function GET(request: NextRequest) {
       orderBy: { timestamp: "desc" }, // Sort by most recent
     });
 
-    console.log("Fetching analytics for link ID:", id);
-    console.log("Analytics data:", analytics);
+    // console.log("Fetching analytics for link ID:", id);
+    // console.log("Analytics data:", analytics);
 
     return NextResponse.json(analytics, { status: 200 });
   } catch (error) {
