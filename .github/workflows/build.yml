@@ -65,7 +65,6 @@
 
 
 
-
 name: Check PR Request
 
 on:
@@ -75,6 +74,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -92,6 +92,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -110,6 +111,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Wait for Postgres to be ready
+        run: |
+          while ! pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for database to be ready..."
+            sleep 2
+          done
+
       - name: Generate Prisma client
         run: pnpm prisma generate
 
@@ -121,24 +129,12 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      - name: Save build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: built-app
-          path: .next  # Adjust based on your Next.js output directory
-
   docker-build:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: built-app
-          path: .next  # Adjust as needed
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -157,6 +153,9 @@ jobs:
           load: true   # Load the image locally for testing
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
           tags: |
             myapp:test
 
@@ -166,9 +165,16 @@ jobs:
           docker compose up -d
           sleep 10
           docker compose ps
+          docker compose logs
           curl -f http://localhost:3000 || exit 1
           docker compose down
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@database:5432/mydatabase
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
 
+      # Only run on main branch pushes
       - name: Push Docker image
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/build-push-action@v4
@@ -177,6 +183,9 @@ jobs:
           push: true
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
