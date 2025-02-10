@@ -57,7 +57,9 @@
 #       - name: Build application
 #         run: pnpm build
 
-   
+ 
+
+
 name: Check PR Request
 
 on:
@@ -103,8 +105,11 @@ jobs:
           version: 8
           run_install: true
 
+      - name: Add pnpm to PATH
+        run: echo "$(npm bin)" >> $GITHUB_PATH
+
       - name: Install Dependencies 
-        run: pnpm install 
+        run: npx pnpm install 
 
       - name: Wait for Postgres to be ready
         run: |
@@ -114,12 +119,12 @@ jobs:
           done
 
       - name: Generate Prisma client
-        run: pnpm prisma generate
+        run: npx pnpm prisma generate
 
       - name: Run database migrations
-        run: pnpm prisma migrate deploy
+        run: npx pnpm prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
 
       - name: Build application
-        run: pnpm build
+        run: npx pnpm build
