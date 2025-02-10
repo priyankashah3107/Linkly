@@ -59,66 +59,36 @@
 
  
 
-
-name: Check PR Request
+name: check-pull-requests
 
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
+    types:
+      -main
 
 jobs:
-  build:
+  check:
+    name: Check Pull Requests
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: mydatabase
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout Code 
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup pnpm 
+        uses: pnpm/action-setup@v3
+
+      - name: Setup Node.js 
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
+          node-version: "22"
 
-      - name: Install PNPM
-        run: npm install -g pnpm
-
-      - name: Install Dependencies
+      - name: Install Dependencies 
         run: pnpm install
 
-      - name: Wait for Postgres to be ready
-        run: |
-          while ! pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for database to be ready..."
-            sleep 2
-          done
-
-      - name: Generate Prisma client
-        run: pnpm prisma generate
-
-      - name: Run database migrations
-        run: pnpm prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
-
-      - name: Build application
-        run: pnpm build
+      - name: Check 
+        run: pnpm check
