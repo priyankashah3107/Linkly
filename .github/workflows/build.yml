@@ -63,7 +63,6 @@
 #       - name: Build application
 #         run: pnpm build
 
-
 name: CI/CD Pipeline
 
 on:
@@ -75,6 +74,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: production  # Replace with your environment name
     services:
       postgres:
         image: postgres:15-alpine
@@ -94,16 +94,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
       - name: Install dependencies
         run: pnpm install
@@ -131,6 +131,7 @@ jobs:
   docker-build:
     needs: build-and-test
     runs-on: ubuntu-latest
+    environment: production  # Replace with your environment name
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -139,7 +140,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -151,11 +152,11 @@ jobs:
           push: false
           load: true
           tags: myapp:test
-          build-args: |
-            DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            BASE_URL=${{ secrets.BASE_URL }}
-            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
+          build-args:
+            DATABASE_URL: postgresql://postgres:postgres@database:5432/mydatabase
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            BASE_URL: ${{ secrets.BASE_URL }}
+            IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
 
       - name: Test Docker container
         run: |
@@ -177,8 +178,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-          build-args: |
-            DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            BASE_URL=${{ secrets.BASE_URL }}
-            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
+          build-args:
+            DATABASE_URL: postgresql://postgres:postgres@database:5432/mydatabase
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            BASE_URL: ${{ secrets.BASE_URL }}
+            IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
