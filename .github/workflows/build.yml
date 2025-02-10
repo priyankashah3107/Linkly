@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Check PR Request
 
 on:
   push:
@@ -39,11 +39,11 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
 
       - name: Generate Prisma client
         run: pnpm prisma generate
@@ -53,11 +53,14 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
 
+      - name: Install Dependencies 
+        run: pnpm install
+
+      - name: Check 
+        run: pnpm check    
+
       - name: Build application
         run: pnpm build
 
-      - name: Run tests
-        run: pnpm test
+   
 
-      - name: Lint check
-        run: pnpm lint
