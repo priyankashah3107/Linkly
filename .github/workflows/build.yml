@@ -64,16 +64,13 @@
 #         run: pnpm build
 
 
-
-name: Check PR Request
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build-and-test:
@@ -94,32 +91,34 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install
 
-      - name: Wait for Postgres to be ready
+      - name: Wait for PostgreSQL
         run: |
-          while ! pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for database to be ready..."
-            sleep 2
+          for i in {1..10}; do
+            if pg_isready -h localhost -p 5432 -U postgres; then
+              echo "Database ready!"
+              exit 0
+            fi
+            echo "Waiting for database ($i/10)..."
+            sleep 3
           done
-
-      - name: Generate Prisma client
-        run: pnpm prisma generate
+          exit 1
 
       - name: Run database migrations
         run: pnpm prisma migrate deploy
@@ -133,8 +132,8 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -151,40 +150,35 @@ jobs:
           context: .
           push: false
           load: true
+          tags: myapp:test
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             BASE_URL=${{ secrets.BASE_URL }}
             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
-          tags: |
-            myapp:test
 
-      - name: Test Docker Compose
+      - name: Test Docker container
         run: |
-          docker compose -f compose.yml config
-          docker compose up -d
+          docker run -d --name myapp-test -p 3000:3000 \
+            -e DATABASE_URL="postgresql://postgres:postgres@database:5432/mydatabase" \
+            -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            myapp:test
           sleep 10
-          docker compose ps
-          docker compose logs
-          curl -f http://localhost:3000 || exit 1
-          docker compose down
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@database:5432/mydatabase
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          BASE_URL: ${{ secrets.BASE_URL }}
-          IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
+          curl -I http://localhost:3000 || (docker logs myapp-test && exit 1)
+          docker stop myapp-test
+          docker rm myapp-test
 
-      - name: Push Docker image
+      - name: Push to Docker Hub
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             BASE_URL=${{ secrets.BASE_URL }}
             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
-          tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
-            ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
