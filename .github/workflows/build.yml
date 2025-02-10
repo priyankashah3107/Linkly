@@ -149,8 +149,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: false  # Don't push during PR checks
-          load: true   # Load the image locally for testing
+          push: false
+          load: true
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
             JWT_SECRET=${{ secrets.JWT_SECRET }}
@@ -174,7 +174,6 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
 
-      # Only run on main branch pushes
       - name: Push Docker image
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: docker/build-push-action@v4
