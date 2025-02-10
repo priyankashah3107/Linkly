@@ -26,6 +26,7 @@ import Image from "next/image";
 import HomePage from "./components/HomePage";
 import useAuth from "./hooks/useAuth";
 import AdminPage from "./components/AdminPage";
+import Footer from "./components/Footer";
 
 interface ShortenFormProps {
   handleUrlShortened: () => void;
@@ -70,6 +71,8 @@ const Page: React.FC<ShortenFormProps> = ({ handleUrlShortened }) => {
           </div>
         </div>
       )}
+
+      <Footer />
     </>
   );
 };
