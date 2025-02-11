@@ -1,4 +1,70 @@
-name: Check PR Request
+# name: Check PR Request
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       postgres:
+#         image: postgres:15-alpine
+#         env:
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: mydatabase
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd "pg_isready -U postgres"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: 8
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
+#           cache: 'pnpm'
+
+#       - name: Install Dependencies
+#         run: pnpm install
+
+#       - name: Wait for Postgres to be ready
+#         run: |
+#           while ! pg_isready -h localhost -p 5432 -U postgres; do
+#             echo "Waiting for database to be ready..."
+#             sleep 2
+#           done
+
+#       - name: Generate Prisma client
+#         run: pnpm prisma generate
+
+#       - name: Run database migrations
+#         run: pnpm prisma migrate deploy
+#         env:
+#           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
+
+#       - name: Build application
+#         run: pnpm build
+
+
+name: CI Pipeline
 
 on:
   push:
@@ -45,13 +111,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Wait for Postgres to be ready
-        run: |
-          while ! pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for database to be ready..."
-            sleep 2
-          done
-
       - name: Generate Prisma client
         run: pnpm prisma generate
 
@@ -63,126 +122,15 @@ jobs:
       - name: Build application
         run: pnpm build
 
-# name: CI/CD Pipeline
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-# on:
-#   push:
-#     branches: [main]
-#   pull_request:
-#     branches: [main]
-
-# jobs:
-#   build-and-test:
-#     runs-on: ubuntu-latest
-#     environment: production # Replace with your actual environment name
-#     services:
-#       postgres:
-#         image: postgres:15-alpine
-#         env:
-#           POSTGRES_USER: postgres
-#           POSTGRES_PASSWORD: postgres
-#           POSTGRES_DB: mydatabase
-#         ports:
-#           - 5432:5432
-#         options: >-
-#           --health-cmd "pg_isready -U postgres"
-#           --health-interval 10s
-#           --health-timeout 5s
-#           --health-retries 5
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-        
-
-#       - name: Setup pnpm
-#         uses: pnpm/action-setup@v2
-#         with:
-#           version: 8   
-
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: 20
-#           cache: 'pnpm'
-
-
-#       - name: Install dependencies
-#         run: pnpm install
-
-#       - name: Wait for PostgreSQL
-#         run: |
-#           for i in {1..10}; do
-#             if pg_isready -h localhost -p 5432 -U postgres; then
-#               echo "Database ready!"
-#               exit 0
-#             fi
-#             echo "Waiting for database ($i/10)..."
-#             sleep 3
-#           done
-#           exit 1
-
-#       - name: Run database migrations
-#         run: pnpm prisma migrate deploy
-#         env:
-#           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
-
-#       - name: Build application
-#         run: pnpm build
-
-#   docker-build:
-#     needs: build-and-test
-#     runs-on: ubuntu-latest
-#     environment: production # Replace with your actual environment name
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Set up Docker Buildx
-#         uses: docker/setup-buildx-action@v2
-
-#       - name: Login to Docker Hub
-#         uses: docker/login-action@v2
-#         with:
-#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
-#           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-#       - name: Build and test Docker image
-#         uses: docker/build-push-action@v4
-#         with:
-#           context: .
-#           push: false
-#           load: true
-#           tags: myapp:test
-#           build-args: |
-#             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
-#             JWT_SECRET=${{ secrets.JWT_SECRET }}
-#             BASE_URL=${{ secrets.BASE_URL }}
-#             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
-
-#       - name: Test Docker container
-#         run: |
-#           docker run -d --name myapp-test -p 3000:3000 \
-#             -e DATABASE_URL="postgresql://postgres:postgres@database:5432/mydatabase" \
-#             -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-#             myapp:test
-#           sleep 10
-#           curl -I http://localhost:3000 || (docker logs myapp-test && exit 1)
-#           docker stop myapp-test
-#           docker rm myapp-test
-
-#       - name: Push to Docker Hub
-#         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-#         uses: docker/build-push-action@v4
-#         with:
-#           context: .
-#           push: true
-#           tags: |
-#             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
-#             ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-#           build-args: |
-#             DATABASE_URL=postgresql://postgres:postgres@database:5432/mydatabase
-#             JWT_SECRET=${{ secrets.JWT_SECRET }}
-#             BASE_URL=${{ secrets.BASE_URL }}
-#             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t myname/myapp:latest .
+          docker tag myname/myapp:latest myname/myapp:${{ github.sha }}
+          docker push myname/myapp:latest
+          docker push myname/myapp:${{ github.sha }}
