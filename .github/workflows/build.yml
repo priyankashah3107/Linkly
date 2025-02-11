@@ -1,4 +1,169 @@
-name: Check PR Request
+# name: Check PR Request
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       postgres:
+#         image: postgres:15-alpine
+#         env:
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: mydatabase
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd "pg_isready -U postgres"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: 8
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
+#           cache: 'pnpm'
+
+#       - name: Install Dependencies
+#         run: pnpm install
+
+#       - name: Wait for Postgres to be ready
+#         run: |
+#           while ! pg_isready -h localhost -p 5432 -U postgres; do
+#             echo "Waiting for database to be ready..."
+#             sleep 2
+#           done
+
+#       - name: Generate Prisma client
+#         run: pnpm prisma generate
+
+#       - name: Run database migrations
+#         run: pnpm prisma migrate deploy
+#         env:
+#           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
+
+#       - name: Build application
+#         run: pnpm build
+
+
+
+
+
+# name: CI Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       postgres:
+#         image: postgres:15-alpine
+#         env:
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#           POSTGRES_DB: mydatabase
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd "pg_isready -U postgres"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#       # Checkout repository
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       # Setup pnpm
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: 8
+
+#       # Set up Node.js environment
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
+#           cache: 'pnpm'
+
+#       # Install Dependencies
+#       - name: Install Dependencies
+#         run: pnpm install
+
+#       # Wait for Postgres to be ready
+#       - name: Wait for Postgres to be ready
+#         run: |
+#           while ! pg_isready -h localhost -p 5432 -U postgres; do
+#             echo "Waiting for database to be ready..."
+#             sleep 2
+#           done
+
+#       # Generate Prisma client
+#       - name: Generate Prisma client
+#         run: pnpm prisma generate
+
+#       # Run database migrations
+#       - name: Run database migrations
+#         run: pnpm prisma migrate deploy
+#         env:
+#           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
+
+#       # Build the application
+#       - name: Build application
+#         run: pnpm build
+
+#       # Log in to Docker Hub using GitHub Secrets (DOCKER_USERNAME and DOCKER_PASSWORD)
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+#       # Build and Tag Docker image with commit SHA
+#       - name: Build and tag Docker image
+#         run: |
+#           docker build -t priyankashah31/myapp:latest .
+#           docker tag priyankashah31/myapp:latest priyankashah31/myapp:${{ github.sha }}
+
+#       # Push Docker images to Docker Hub
+#       - name: Push Docker images to Docker Hub
+#         run: |
+#           docker push priyankashah31/myapp:latest
+#           docker push priyankashah31/myapp:${{ github.sha }}
+
+
+# newCode
+
+
+name: CI Pipeline
 
 on:
   push:
@@ -30,11 +195,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 8.15.1
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -43,14 +210,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install
-
-      - name: Wait for Postgres to be ready
         run: |
-          while ! pg_isready -h localhost -p 5432 -U postgres; do
-            echo "Waiting for database to be ready..."
-            sleep 2
-          done
+          pnpm config set store-dir .pnpm-store
+          pnpm install --no-frozen-lockfile --verbose
 
       - name: Generate Prisma client
         run: pnpm prisma generate
@@ -62,3 +224,33 @@ jobs:
 
       - name: Build application
         run: pnpm build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mydatabase
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          IPINFO_API_KEY: ${{ secrets.IPINFO_API_KEY }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            priyankashah31/myapp:latest
+            priyankashah31/myapp:${{ github.sha }}
+          build-args: |
+            DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mydatabase
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

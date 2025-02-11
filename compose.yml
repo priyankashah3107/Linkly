@@ -1,3 +1,50 @@
+# version: "3.8"
+
+# services:
+#   app:
+#     container_name: nextjs_app
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       args:
+#         DATABASE_URL: ${DATABASE_URL}
+#         JWT_SECRET: ${JWT_SECRET}
+#         BASE_URL: ${BASE_URL}
+#         IPINFO_API_KEY: ${IPINFO_API_KEY}
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       DATABASE_URL: ${DATABASE_URL}
+#       JWT_SECRET: ${JWT_SECRET}
+#       BASE_URL: ${BASE_URL}
+#       IPINFO_API_KEY: ${IPINFO_API_KEY}
+#     volumes:
+#       - .:/app # Bind mount for instant updates in development
+#       - /app/node_modules # Prevent overwriting node_modules with host files
+#     depends_on:
+#       - database
+#     command: ["pnpm", "dev"]
+
+#   database:
+#     image: postgres:15-alpine
+#     container_name: postgres_db
+#     restart: always
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: mydatabase
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#     ports:
+#       - "5432:5432"
+
+# volumes:
+#   pgdata:
+
+
+# newcode
+
+
 version: "3.8"
 
 services:
@@ -19,8 +66,8 @@ services:
       BASE_URL: ${BASE_URL}
       IPINFO_API_KEY: ${IPINFO_API_KEY}
     volumes:
-      - .:/app # Bind mount for instant updates in development
-      - /app/node_modules # Prevent overwriting node_modules with host files
+      - .:/app
+      - /app/node_modules
     depends_on:
       - database
     command: ["pnpm", "dev"]
