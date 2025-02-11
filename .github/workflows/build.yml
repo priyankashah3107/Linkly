@@ -153,8 +153,8 @@ jobs:
           context: .
           push: true
           tags: |
-            priyankashah31/myapp:latest
-            priyankashah31/myapp:${{ github.sha }}
+            priyankashah31/linklyapp:latest
+            priyankashah31/linklyapp:${{ github.sha }}
           build-args: |
             DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mydatabase
             JWT_SECRET=${{ secrets.JWT_SECRET }}
@@ -165,6 +165,6 @@ jobs:
       # Stop and remove any running containers (cleanup step)
       - name: Cleanup containers
         run: |
-          docker ps -q --filter "ancestor=priyankashah31/myapp" | xargs --no-run-if-empty docker stop
-          docker ps -a -q --filter "ancestor=priyankashah31/myapp" | xargs --no-run-if-empty docker rm
+          docker ps -q --filter "ancestor=priyankashah31/linklyapp" | xargs --no-run-if-empty docker stop
+          docker ps -a -q --filter "ancestor=priyankashah31/linklyapp" | xargs --no-run-if-empty docker rm
     
