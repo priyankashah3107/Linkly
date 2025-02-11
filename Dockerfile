@@ -95,8 +95,6 @@
 # new code
 
 
-
-# Dockerfile
 FROM node:20-alpine
 
 # Add build-time arguments
@@ -113,18 +111,24 @@ ENV IPINFO_API_KEY=${IPINFO_API_KEY}
 
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Install necessary build dependencies
+RUN apk add --no-cache python3 make g++
+
+# Install pnpm with specific version
+RUN npm install -g pnpm@8.15.1
 
 # Copy package files first
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with more verbose output and error handling
-RUN pnpm install --frozen-lockfile || (echo "Failed to install dependencies" && exit 1)
+# Install dependencies with verbose logging
+RUN echo "Node version: $(node -v)" && \
+    echo "PNPM version: $(pnpm -v)" && \
+    pnpm config set store-dir .pnpm-store && \
+    pnpm install --frozen-lockfile --no-optional --verbose
 
 # Copy prisma files and generate client
 COPY prisma ./prisma/
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Copy the rest of the application
 COPY . .
