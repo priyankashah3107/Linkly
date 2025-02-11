@@ -161,5 +161,10 @@ jobs:
             BASE_URL=${{ secrets.BASE_URL }}
             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
-          
+          cache-to: type=gha,mode=max    
+      # Stop and remove any running containers (cleanup step)
+      - name: Cleanup containers
+        run: |
+          docker ps -q --filter "ancestor=priyankashah31/myapp" | xargs --no-run-if-empty docker stop
+          docker ps -a -q --filter "ancestor=priyankashah31/myapp" | xargs --no-run-if-empty docker rm
+    
