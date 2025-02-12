@@ -117,3 +117,4 @@ jobs:
             sudo docker stop linklyapp || true
             sudo docker rm linklyapp || true
             sudo docker run -d --name linklyapp -p 3000:3000 priyankashah31/linklyapp:latest
+          debug: true
