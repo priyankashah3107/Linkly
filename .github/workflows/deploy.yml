@@ -118,3 +118,5 @@ jobs:
             sudo docker rm linklyapp || true
             sudo docker run -d --name linklyapp -p 3000:3000 priyankashah31/linklyapp:latest
           debug: true
+          command_timeout: 20m
+          timeout: 60s
