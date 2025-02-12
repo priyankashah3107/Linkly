@@ -38,17 +38,17 @@ ENV IPINFO_API_KEY=${IPINFO_API_KEY}
 
 WORKDIR /app
 
-# Install necessary build dependencies
+
 RUN apk add --no-cache python3 make g++
 
 
-RUN npm install -g pnpm@8.15.1
+RUN npm install -g pnpm@8.15.1 && pnpm -v
+
 
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with verbose logging
-RUN echo "Node version: $(node -v)" && \
-    echo "PNPM version: $(pnpm -v)" && \
+RUN node -v && \
+    pnpm -v && \
     pnpm config set store-dir .pnpm-store && \
     pnpm install --frozen-lockfile --no-optional --verbose
 
@@ -61,4 +61,5 @@ COPY . .
 RUN pnpm build
 
 EXPOSE 3000
+
 CMD ["pnpm", "start"]

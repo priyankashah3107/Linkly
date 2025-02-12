@@ -213,9 +213,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: |
-          pnpm config set store-dir .pnpm-store
-          pnpm install --no-frozen-lockfile --verbose
+        run: pnpm install --frozen-lockfile --verbose
 
       - name: Generate Prisma client
         run: pnpm prisma generate
@@ -225,6 +223,10 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
 
+      - name: Seed Database
+        run: pnpm prisma db seed
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+
       - name: Build application
         run: pnpm build
-
