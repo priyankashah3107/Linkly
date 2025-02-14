@@ -37,7 +37,7 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
     }
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/link/short",
+        "/api/link/short",
         { longUrl },
         {
           headers: {

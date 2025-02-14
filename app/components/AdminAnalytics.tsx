@@ -70,7 +70,7 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     const fetchAnalytics = async (linkId: string) => {
       try {
         const response = await axios.get<AnalyticsData[]>(
-          `http://localhost:3000/api/link/analytics?id=${linkId}`
+          `/api/link/analytics?id=${linkId}`
         );
         console.log("Response data is", response.data);
         setAnalytics(response.data);

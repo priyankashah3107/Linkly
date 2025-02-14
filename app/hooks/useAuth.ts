@@ -33,7 +33,7 @@ const useAuth = () => {
 
   const authUser = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/me");
+      const response = await axios.get("/api/me");
       if (response.data && response.data.user) {
         setUser(response.data.user); // Set user data
         setIsAuthenticated(true); // Mark as authenticated

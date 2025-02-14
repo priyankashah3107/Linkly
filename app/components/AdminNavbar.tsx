@@ -23,7 +23,7 @@ const AdminNavbar: React.FC<AuthUser> = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.delete("http://localhost:3000/api/logout");
+      await axios.delete("/api/logout");
 
       toast.success("Successfully Logged out ✨");
 

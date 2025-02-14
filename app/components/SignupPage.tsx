@@ -42,7 +42,7 @@ export default function Signup() {
     try {
       // signup Logic
       const response = await axios.post(
-        "http://localhost:3000/api/signup",
+        "/api/signup",
         formData
       );
 

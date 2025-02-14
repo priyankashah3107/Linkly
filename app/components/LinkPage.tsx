@@ -34,7 +34,7 @@ const LinkPage = () => {
   const fetchUrl = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/link/short/getauth"
+        "/api/link/short/getauth"
       );
       // console.log("FetchUrl Data", response.data);
       // const pri = response.data.shorturls;
@@ -96,7 +96,7 @@ const LinkPage = () => {
   const fetchAnalytics = async (linkId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/link/analytics?id=${linkId}`
+        `/api/link/analytics?id=${linkId}`
       );
       console.log("akjfhakdfhjadkfjhadkf", response.data);
       setAnalyticsData((prev) => ({ ...prev, [linkId]: response.data }));
@@ -110,7 +110,7 @@ const LinkPage = () => {
   const handleDeleteLink = async (id: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/link/short/deletelink/${id}`
+        `/api/link/short/deletelink/${id}`
       );
       // toast.success("Link deleted successfully");
 

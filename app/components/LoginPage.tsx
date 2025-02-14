@@ -36,7 +36,7 @@ export default function LoginPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/login",
+        "/api/login",
         formData
       );
       console.log("Response data:", response.data);
