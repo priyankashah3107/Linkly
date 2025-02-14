@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   BarChart,
   Bar,
@@ -40,16 +40,25 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
         console.log("Response data is", response.data);
         setAnalytics(response.data);
         setLoading(false);
-      } catch (error:any) {
+      } catch (error: unknown) { 
         console.error("Error fetching analytics:", error);
-        if (error.response) {
-          if (error.response.status === 401 || error.response.status === 403) {
-            setError("You are not authorized to view this analytics.");
+
+        if (axios.isAxiosError(error)) { 
+          const axiosError = error as AxiosError;
+
+          if (axiosError.response) {
+            if (axiosError.response.status === 401 || axiosError.response.status === 403) {
+              setError("You are not authorized to view this analytics.");
+            } else {
+              setError("Failed to load analytics.");
+            }
+          } else if (axiosError.request) {
+            setError("No response received from the server."); 
           } else {
-            setError("Failed to load analytics.");
+            setError("An error occurred while setting up the request."); 
           }
         } else {
-          setError("An error occurred while fetching analytics.");
+          setError("An unexpected error occurred."); 
         }
         setLoading(false);
       }
@@ -70,16 +79,16 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-lg font-medium text-white">
-          {error} 
-        </div>
+ if (error) {
+  return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="text-lg font-medium text-white">
+        {error} 
       </div>
-    );
-  }
-  
+    </div>
+  );
+}
+
   // Prepare data for the daily visits chart
   const dailyVisits = analytics.reduce(
     (acc: { name: string; visits: number }[], curr) => {
