@@ -135,7 +135,7 @@ export async function loginUser(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error While Signing in the User", error);
+    // console.log("Error While Signing in the User", error);
     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
   }
 }

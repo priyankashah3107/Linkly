@@ -39,7 +39,7 @@ export default function LoginPage() {
         "/api/login",
         formData
       );
-      console.log("Response data:", response.data);
+      // console.log("Response data:", response.data);
       if (response.status === 200) {
         toast.success("Login Successfully");
         setTimeout(() => {

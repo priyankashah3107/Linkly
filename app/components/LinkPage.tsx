@@ -29,7 +29,7 @@ const LinkPage = () => {
   );
   const router = useRouter();
 
-  console.log("URLS", urls);
+  // console.log("URLS", urls);
 
   const fetchUrl = async () => {
     try {
@@ -98,7 +98,7 @@ const LinkPage = () => {
       const response = await axios.get(
         `/api/link/analytics?id=${linkId}`
       );
-      console.log("akjfhakdfhjadkfjhadkf", response.data);
+      // console.log("akjfhakdfhjadkfjhadkf", response.data);
       setAnalyticsData((prev) => ({ ...prev, [linkId]: response.data }));
       return response.data;
     } catch (error) {

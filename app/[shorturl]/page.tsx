@@ -145,8 +145,8 @@ export default async function PageProps({
   params: { shorturl: string };
 }) {
   const { shorturl } = params;
-  console.log("0329035u24jkdkgn", shorturl);
-  console.log("ShortUrl [shorturl]/page.tsx", shorturl);
+  // console.log("0329035u24jkdkgn", shorturl);
+  // console.log("ShortUrl [shorturl]/page.tsx", shorturl);
 
   // Find the URL from the database
   const url = await prisma.link.findUnique({
@@ -158,7 +158,7 @@ export default async function PageProps({
     return <div>404 - URL not found</div>;
   }
 
-  console.log("from [shorturl]/page.tsx", url);
+  // console.log("from [shorturl]/page.tsx", url);
 
   // **Extract Analytics Data**
   const headersList = headers();
@@ -186,7 +186,7 @@ export default async function PageProps({
   const xForwardedFor =
     (await headersList).get("x-forwarded-for") || "127.0.0.1";
   const ip = xForwardedFor.split(",")[0].trim(); // Get the first IP address
-  console.log("IP Address:", ip); // Debug log
+  // console.log("IP Address:", ip); // Debug log
 
   // **GeoIP Lookup using ipinfo.io**
   let country = "Unknown";
@@ -197,7 +197,7 @@ export default async function PageProps({
       const response = await axios.get(
         `https://ipinfo.io/${ip}?token=${process.env.IPINFO_API_KEY}`
       );
-      console.log("ipinfo.io Response:", response.data); // Debug log
+      // console.log("ipinfo.io Response:", response.data); // Debug log
       country = response.data.country || "Unknown";
       city = response.data.city || "Unknown";
     } catch (error) {

@@ -37,7 +37,7 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
             withCredentials: true
           }
         );
-        console.log("Response data is", response.data);
+        // console.log("Response data is", response.data);
         setAnalytics(response.data);
         setLoading(false);
       } catch (error: unknown) { 

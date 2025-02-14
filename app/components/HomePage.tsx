@@ -29,7 +29,7 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
   // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
-    console.log(longUrl);
+    // console.log(longUrl);
     setLoading(true);
     if (!isAuthenticated) {
       toast.error("You need to log in to shorten links!");

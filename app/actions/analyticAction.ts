@@ -8,7 +8,7 @@ export async function analyticsByLinkId(
 ) {
   try {
     const { linkId } = params;
-    console.log("LinkId from the params analyticsByLinkId", linkId);
+    // console.log("LinkId from the params analyticsByLinkId", linkId);
     // Check if linkId is provided
     if (!linkId) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function analyticsByLinkId(
       );
     }
 
-    console.log("LinkId from the params analyticsByLinkId", link);
+    // console.log("LinkId from the params analyticsByLinkId", link);
     // Fetch analytics for the link
     const analytics = await prisma.analytics.findMany({
       where: {
@@ -58,7 +58,7 @@ export async function analyticsByLinkId(
       },
     });
 
-    console.log("Analytics", analytics);
+    // console.log("Analytics", analytics);
     // Return the analytics data
     return NextResponse.json({ analytics }, { status: 200 });
   } catch (error) {

@@ -135,7 +135,7 @@ export async function getAllShortUrl() {
       },
     });
 
-    console.log("All Short URLs:", shortUrls);
+    // console.log("All Short URLs:", shortUrls);
     return NextResponse.json(
       { message: "All ShortUrls is", shortUrls },
       { status: 200 }
