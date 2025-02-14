@@ -42,7 +42,7 @@ const AdminNavbar: React.FC<AuthUser> = () => {
   };
 
   return (
-    <nav className="flex justify-between items-center p-4  text-white relative">
+    <nav className="flex justify-between items-center p-4  text-white relative lg:px-20">
       {/* Left Side: Logo */}
       <div className="flex items-center">
         <Image

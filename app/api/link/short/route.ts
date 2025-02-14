@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     // Generate the short URL ID
     const nanoid = customAlphabet(
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-      8
+      5
     );
 
     // Check authentication
@@ -92,15 +92,13 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.BASE_URL || request.nextUrl.origin;
 
     // Ensure no trailing slash in BASE_URL
+    // i am using this cleanedBaseUrl because in the BASEURL i am passing the same domain when my app is running so this prevent from the duplicacy
     const cleanedBaseUrl = baseUrl.replace(/\/$/, "");
 
-    // Generate the correct short URL
     const shortUrl = `${cleanedBaseUrl}/${shortId}`;
-
-    // Generate QR code
     const qrCode = await QrCode.toDataURL(shortUrl);
 
-    // Save in database
+ 
     const newLink = await prisma.link.create({
       data: {
         longUrl,

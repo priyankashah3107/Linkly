@@ -1,40 +1,3 @@
-// import axios from "axios";
-// import React, { useEffect, useState } from "react";
-
-// const AdminAnalytics = ({ linkId }: { linkId: string }) => {
-//   const [analytics, setAnalytics] = useState(null);
-
-//   useEffect(() => {
-//     const fetchAnalytics = async (linkId: string) => {
-//       try {
-//         const response = await axios.get(
-//           `http://localhost:3000/api/link/analytics?id=${linkId}`
-//         );
-//         console.log("Analytics Data:", response.data);
-//         setAnalytics(response.data);
-//       } catch (error) {
-//         console.error("Error fetching analytics:", error);
-//       }
-//     };
-
-//     if (linkId) {
-//       fetchAnalytics(linkId);
-//     }
-//   }, [linkId]);
-
-//   return (
-//     <div>
-//       <h2>Admin Analytics</h2>
-//       {analytics ? (
-//         <pre>{JSON.stringify(analytics, null, 2)}</pre>
-//       ) : (
-//         <p>Loading...</p>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default AdminAnalytics;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -65,18 +28,29 @@ const COLORS = ["#4f46e5", "#60a5fa", "#34d399", "#f59e0b", "#ef4444"];
 const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
   const [analytics, setAnalytics] = useState<AnalyticsData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [error, setError] = useState("");
   useEffect(() => {
     const fetchAnalytics = async (linkId: string) => {
       try {
         const response = await axios.get<AnalyticsData[]>(
-          `/api/link/analytics?id=${linkId}`
+          `/api/link/analytics?id=${linkId}`, {
+            withCredentials: true
+          }
         );
         console.log("Response data is", response.data);
         setAnalytics(response.data);
         setLoading(false);
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error fetching analytics:", error);
+        if (error.response) {
+          if (error.response.status === 401 || error.response.status === 403) {
+            setError("You are not authorized to view this analytics.");
+          } else {
+            setError("Failed to load analytics.");
+          }
+        } else {
+          setError("An error occurred while fetching analytics.");
+        }
         setLoading(false);
       }
     };
@@ -96,6 +70,16 @@ const AdminAnalytics: React.FC<{ linkId: string }> = ({ linkId }) => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-lg font-medium text-white">
+          {error} 
+        </div>
+      </div>
+    );
+  }
+  
   // Prepare data for the daily visits chart
   const dailyVisits = analytics.reduce(
     (acc: { name: string; visits: number }[], curr) => {

@@ -66,7 +66,7 @@ const HomePage = ({ handleUrlShortened }: ShortenFormProps) => {
       <div className="">
         <div className="flex flex-col items-center text-center px-4 md:px-10">
           {/* Heading */}
-          <h1 className="bg-gradient-to-tr from-[#144ee3] to-[#EB568E] bg-clip-text text-transparent text-4xl sm:text-5xl lg:text-6xl font-extrabold font-['Inter'] leading-tight lg:leading-[80px]">
+          <h1 className="bg-gradient-to-tr from-[#144ee3] to-[#EB568E] bg-clip-text text-transparent text-4xl sm:text-5xl lg:text-6xl font-extrabold font-['Inter'] leading-tight lg:leading-[80px] mt-28">
             Shorten Your Loooonng Links {":)"} 
           </h1>
 

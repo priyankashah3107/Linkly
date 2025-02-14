@@ -133,119 +133,110 @@ const LinkPage = () => {
   }, []);
 
   return (
-    <div className="flex justify-center">
-      <div className="w-screen max-w-7xl mt-10 overflow-x-auto">
-        <table className="w-full text-white bg-[#181e29] shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-[#222936] text-left text-gray-300 font-semibold">
-              <th className="px-6 py-3">Short Link</th>
-              <th className="px-6 py-3 hidden lg:table-cell">Long Link</th>
-              <th className="px-6 py-3">QR Code</th>
-              <th className="px-6 py-3 hidden lg:table-cell">Clicks</th>
-              <th className="px-6 py-3 hidden lg:table-cell">Date</th>
-              <th className="px-6 py-3 hidden lg:table-cell">Delete</th>
-              <th>Analytics</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {urls?.map((val) => (
-              <tr
-                key={val.id}
-                className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
-              >
-                <td className="px-6 py-4 flex flex-row gap-3">
-                  <Link
-                    target="_blank"
-                    // href={`/${val.shortUrl}`}
-                    href={val.shortUrl}
-                    className="text-blue-400 hover:underline flex items-center gap-2 truncate"
-                  >
-                    {val?.shortUrl}
-                  </Link>
-                  <button onClick={() => handleCopyUrl(val?.shortUrl)}>
-                    {/* <Copy className="w-4 h-4" /> */}
-                    {copied && copyUrl == val.shortUrl ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
-                </td>
-                <td className="px-6 py-4 truncate max-w-xs hidden lg:table-cell">
-                  <Link
-                    target="_blank"
-                    href={val?.longUrl}
-                    className="text-gray-400 hover:underline truncate"
-                  >
-                    {val?.longUrl}
-                  </Link>
-                </td>
-                <td className="px-6 py-4 items-center flex flex-row gap-8 text-gray-400">
-                  {/* <Link href={`/image/${val.id}`} target="_blank"> */}
-                  {/* <Link
-                    href={
-                      `/image/${val.qrCode}` ||
-                      "https://github.com/priyankashah3107"
-                    }
-                    target="_blank"
-                  > */}
-                  <Link
-                    href={
-                      `${val.qrCode}` || "https://github.com/priyankashah3107"
-                    }
-                    target="_blank"
-                  >
-                    <Image
-                      src={val.qrCode || "https://github.com/priyankashah3107"}
-                      // src={`/api/qrcode/${val.id}`}
-                      alt="QR Code"
-                      className="w-8 h-8 object-cover "
-                      width={10}
-                      height={10}
-                    />
-                  </Link>
-
-                  <Download
-                    className="cursor-pointer"
-                    onClick={() => handleDownloadQrCode(val.qrCode)}
-                  />
-                </td>
-                <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  {/* {val?.clicks ?? 0} */}
-                  {val?.visits ?? 0}
-                </td>
-                <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  {new Date(val?.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </td>
-                {/* delte the link  */}
-                <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  <button onClick={() => handleDeleteLink(val.id)}>
-                    <Trash className="text-red-300 hover:text-red-600 w-6 h-6" />
-                  </button>
-                </td>
-                <td className="px-6 py-4 text-center hidden lg:table-cell">
-                  <Link
-                    href={`/admin/analytics/${val.id}`}
-                    onClick={(event) => handleClick(event, val.id)}
-                    target="_blank"
-                    title={
-                      analyticsData[val.id]
-                        ? `Visits: ${analyticsData[val.id]}`
-                        : "Loading analytics..."
-                    }
-                  >
-                    <BarChart2 />
-                  </Link>
-                </td>
+ 
+  <div className="flex justify-center px-4 sm:px-6 lg:px-8"> 
+      <div className="w-full max-w-7xl mt-10">
+        <div className="overflow-x-auto rounded-lg shadow-md"> 
+          <table className="w-full text-white bg-[#181e29] min-w-[600px]"> 
+            <thead>
+              <tr className="bg-[#222936] text-left text-gray-300 font-semibold">
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Short Link</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Long Link</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">QR Code</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Clicks</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Date</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Delete</th>
+                <th className="px-3 sm:px-6 py-3 whitespace-nowrap">Analytics</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {urls?.map((val) => (
+                <tr
+                  key={val.id}
+                  className="border-b border-gray-700 bg-[#222936] hover:bg-[#060708]"
+                >
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        target="_blank"
+                        href={val.shortUrl}
+                        className="text-blue-400 hover:underline truncate max-w-[120px] sm:max-w-[200px]"
+                      >
+                        {val?.shortUrl}
+                      </Link>
+                      <button 
+                        onClick={() => handleCopyUrl(val?.shortUrl)}
+                        className="flex-shrink-0"
+                      >
+                        {copied && copyUrl == val.shortUrl ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                  <td className="px-3 sm:px-6 py-4">
+                    <Link
+                      target="_blank"
+                      href={val?.longUrl}
+                      className="text-gray-400 hover:underline truncate block max-w-[120px] sm:max-w-[200px]"
+                    >
+                      {val?.longUrl}
+                    </Link>
+                  </td>
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <Link
+                        href={val.qrCode || "https://github.com/priyankashah3107"}
+                        target="_blank"
+                        className="flex-shrink-0"
+                      >
+                        <Image
+                          src={val.qrCode || "https://github.com/priyankashah3107"}
+                          alt="QR Code"
+                          className="w-6 h-6 sm:w-8 sm:h-8 object-cover"
+                          width={10}
+                          height={10}
+                        />
+                      </Link>
+                      <Download
+                        className="cursor-pointer w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+                        onClick={() => handleDownloadQrCode(val.qrCode)}
+                      />
+                    </div>
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 text-center">
+                    {val?.visits ?? 0}
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 text-center whitespace-nowrap">
+                    {new Date(val?.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 text-center">
+                    <button onClick={() => handleDeleteLink(val.id)}>
+                      <Trash className="text-red-300 hover:text-red-600 w-5 h-5 sm:w-6 sm:h-6" />
+                    </button>
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 text-center">
+                    <Link
+                      href={`/admin/analytics/${val.id}`}
+                      onClick={(event) => handleClick(event, val.id)}
+                      target="_blank"
+                      title={analyticsData[val.id] ? `Visits: ${analyticsData[val.id]}` : "Loading analytics..."}
+                    >
+                      <BarChart2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -59,22 +59,37 @@
 //     );
 //   }
 // }
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/db";
-
+import { getUserFromToken } from "@/app/utils/authHelper";
 export async function GET(request: NextRequest) {
   // const id = "cm6qn91ay0015uw78u3dshi68";
+
   const searchParams = request.nextUrl.searchParams;
-  const id = searchParams.get("id");
-  // Validate the ID
-  if (!id) {
+  const linkId = searchParams.get("id");
+
+  if (!linkId) {
     return NextResponse.json({ error: "Link ID is required" }, { status: 400 });
   }
 
   try {
-    // Fetch analytics data for the given link ID
+
+    const {userId, error} = getUserFromToken(request)
+
+    if(error || !userId) {
+      return NextResponse.json({error: "Unauthorized"}, {status: 401})
+    }
+
+    const link = await prisma.link.findUnique({
+      where: {id: linkId}
+    })
+    
+    if(!link || link.userId !== userId) {
+      return NextResponse.json({error: "you do not have permission to view this analytics"}, {status: 403})
+    }
     const analytics = await prisma.analytics.findMany({
-      where: { linkId: id },
+      where: { linkId},
 
       orderBy: { timestamp: "desc" }, // Sort by most recent
     });
