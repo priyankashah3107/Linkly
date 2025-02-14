@@ -1,12 +1,12 @@
 <h1 style="font-size: 20px;"> Linkly is an efficient and easy-to-use URL shortening service that streamlines your online experience.
 </h1>
 
-![linkly](https://github.com/user-attachments/assets/04e59011-3ba8-48d8-9c43-1d7efc766683)
-
 
 [DEMO LINK](https://www.loom.com/share/a7c228430179412ab39cb47b2158e70f)
 
-Repo for https://linkly.shahpriyanka.com
+![linkly](https://github.com/user-attachments/assets/04e59011-3ba8-48d8-9c43-1d7efc766683)
+
+Live Link https://linkly.shahpriyanka.com
 
 ## Running Locally
 
