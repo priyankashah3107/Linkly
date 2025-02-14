@@ -53,6 +53,7 @@ jobs:
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
             IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -61,7 +62,7 @@ jobs:
         run: docker pull priyankashah31/linklyapp:latest
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@master 
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -75,6 +76,7 @@ jobs:
             sudo docker run -d --name linklyapp -p 3000:3000 \
               -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e BASE_URL=${{ secrets.BASE_URL }} \
               -e IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }} \
               priyankashah31/linklyapp:latest
           debug: true
