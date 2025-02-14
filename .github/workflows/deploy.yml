@@ -120,7 +120,6 @@
 #           debug: true
 #           command_timeout: 20m
 #           timeout: 60s
-
 name: CD Pipeline
 
 on:
@@ -173,6 +172,11 @@ jobs:
           tags: |
             priyankashah31/linklyapp:latest
             priyankashah31/linklyapp:${{ github.sha }}
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
+            IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -190,9 +194,12 @@ jobs:
             sudo docker stop linklyapp || true
             sudo docker rm linklyapp || true
 
-            # Start the container with the necessary parameters
+            # Start the container with the necessary environment variables
             sudo docker run -d --name linklyapp -p 3000:3000 \
-              
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e BASE_URL=${{ secrets.BASE_URL }} \
+              -e IPINFO_API_KEY=${{ secrets.IPINFO_API_KEY }} \
               priyankashah31/linklyapp:latest
           debug: true
           command_timeout: 20m
