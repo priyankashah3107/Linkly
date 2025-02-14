@@ -3,7 +3,8 @@
 
 ![linkly](https://github.com/user-attachments/assets/04e59011-3ba8-48d8-9c43-1d7efc766683)
 
-![DEMO_LINK](https://www.loom.com/share/a7c228430179412ab39cb47b2158e70f)
+
+[DEMO LINK](https://www.loom.com/share/a7c228430179412ab39cb47b2158e70f)
 
 Repo for https://linkly.shahpriyanka.com
 
