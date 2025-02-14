@@ -11,7 +11,7 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in environment variables");
 }
 
-export async function registerUser(request: Request) {
+export async function registerUser(request: Request): Promise<NextResponse> {
   try {
     const body = await request.json();
     const validation = createUserSchema.safeParse(body);
@@ -57,53 +57,6 @@ export async function registerUser(request: Request) {
   }
 }
 
-// GetMe;
-
-// export async function loginUser(request: Request) {
-//   try {
-//     const body = await request.json(); // Extracting email and password from the request
-//     const { email, password } = body;
-
-//     // Your validation logic here
-//     const user = await prisma.user.findUnique({ where: { email } });
-
-//     if (!user) {
-//       return NextResponse.json(
-//         { error: "Invalid Credentials" },
-//         { status: 401 }
-//       );
-//     }
-
-//     const passwordMatch = await bcrypt.compare(password, user.password);
-
-//     if (!passwordMatch) {
-//       return NextResponse.json({ error: "Invalid Password" }, { status: 404 });
-//     }
-
-//     // Generate JWT token and send response
-//     const token = jwt.sign({ email, userId: user.id }, JWT_SECRET, {
-//       expiresIn: "30d",
-//     });
-//     // Set jwt cookie
-//     const response = NextResponse.json(
-//       { message: "Login Successfully", user: { email: user.email }, token },
-//       { status: 200 }
-//     );
-
-//     response.headers.set(
-//       "Set-Cookie",
-//       `jwt=${token}; HttpOnly; Path=/; Max-Age=${
-//         30 * 24 * 60 * 60
-//       }; SameSite=Strict; ${
-//         process.env.NODE_ENV !== "development" ? "Secure" : ""
-//       }`
-//     );
-//     return response;
-//   } catch (error) {
-//     console.log("Error While Signin the User", error);
-//     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
-//   }
-// }
 
 export async function loginUser(request: Request) {
   try {
@@ -135,11 +88,11 @@ export async function loginUser(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    // console.log("Error While Signing in the User", error);
+    console.log("Error While Signing in the User", error);
     return NextResponse.json({ error: "Failed to Login" }, { status: 500 });
   }
 }
-export async function getMe(request: Request) {
+export async function getMe(request: Request): Promise<NextResponse> {
   try {
     const cookie = request.headers.get("cookie");
     if (!cookie) {
@@ -173,7 +126,7 @@ export async function getMe(request: Request) {
 
 // Logout
 
-export async function logoutUser() {
+export async function logoutUser(): Promise<NextResponse> {
   try {
     const response = NextResponse.json(
       { message: "Logged out Successfully" },
