@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 style="font-size: 20px;"> Linkly is an efficient and easy-to-use URL shortening service that streamlines your online experience.
+</h1>
 
-## Getting Started
 
-First, run the development server:
+[DEMO LINK](https://www.loom.com/share/a7c228430179412ab39cb47b2158e70f)
+
+![linkly](https://github.com/user-attachments/assets/04e59011-3ba8-48d8-9c43-1d7efc766683)
+
+Live Link https://linkly.shahpriyanka.com
+
+## Running Locally
+
+> [!NOTE]  
+> This project uses [pnpm](https://pnpm.io/) only as a package manager.
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+https://github.com/priyankashah3107/Linkly.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Navigate to the project directory:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd Linkly
+```
+# Instant Docker Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> [!NOTE]  
+> Your Docker Demon should be online
 
-## Learn More
+1. Running Script for Instant setup
 
-To learn more about Next.js, take a look at the following resources:
+```
+# Gives permission to execute a setup file
+chmod +x run_linklyapp.sh
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Runs the setup script file
+./run_linklyapp.sh
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+# Docker Compose up 
+```
+docker-compose up 
+```
+# Traditional Docker Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+(Optional) 
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker run -p 3000:3000 -e DATABASE_URL="postgres"
+JWT_SECRET="alkjalkfjdladf"
+BASE_URL="http://localhost:3000"
+IPINFO_API_KEY="asdkjgfkjl"
+priyankashah31/linklyapp
+``` 
+
+
+
+1. Create a .env file:
+
+   - Copy `.env.example` and rename it to `.env`.
+
+
+2. Install dependencies:
+
+```bash
+pnpm install
+```
+
+3. Run database migrations:
+
+```bash
+pnpm prisma:migrate
+```
+
+4. Generate prisma client
+
+```bash
+pnpm prisma generate
+```
+
+5. Seed the database:
+
+```bash
+pnpm db:seed
+```
+
+6. Start the development server:
+
+```bash
+pnpm dev
+```
+
+## Usage
+
+1. Access the application in your browser:
+
+```bash
+http://localhost:3000
+```
+
+2. Login using any of the following provided user credentials:
+
+- Email: `testuser@example.com`, Password: `123456789`
+
+- Email: `testuser2@example.com`, Password: `123456789`
+
