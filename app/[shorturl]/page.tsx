@@ -150,7 +150,8 @@ export default async function PageProps({
 
   // Find the URL from the database
   const url = await prisma.link.findUnique({
-    where: { shortUrl: `${process.env.BASE_URL}/${shorturl}` },
+    // where: { shortUrl: `${process.env.BASE_URL}/${shorturl}` },
+    where: {shortUrl: shorturl},
     select: { id: true, longUrl: true, visits: true },
   });
 
