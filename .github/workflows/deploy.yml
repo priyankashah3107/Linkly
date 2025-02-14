@@ -121,7 +121,6 @@
 #           command_timeout: 20m
 #           timeout: 60s
 
-
 name: CD Pipeline
 
 on:
@@ -174,8 +173,6 @@ jobs:
           tags: |
             priyankashah31/linklyapp:latest
             priyankashah31/linklyapp:${{ github.sha }}
-          build-args: | # Still useful for build-time args
-            # ... (your build-args if any)
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -183,7 +180,7 @@ jobs:
         run: docker pull priyankashah31/linklyapp:latest
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v0.1.0  # Updated to the latest version
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -193,13 +190,10 @@ jobs:
             sudo docker stop linklyapp || true
             sudo docker rm linklyapp || true
 
+            # Start the container with the necessary parameters
             sudo docker run -d --name linklyapp -p 3000:3000 \
-              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-              -e BASE_URL="${{ secrets.BASE_URL }}" \
-              -e IPINFO_API_KEY="${{ secrets.IPINFO_API_KEY }}" \
+              
               priyankashah31/linklyapp:latest
-
           debug: true
           command_timeout: 20m
           timeout: 60s
