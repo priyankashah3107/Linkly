@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 // import { signIn } from "next-auth/react";
-import { Eye, Github, Mail } from "lucide-react";
-import Image from "next/image";
+import { Eye, Mail } from "lucide-react";
+// import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -132,7 +132,7 @@ export default function Signup() {
       </div>
 
       {/* Social Logins */}
-      <button
+      {/* <button
         // onClick={() => signIn("google")}
         className="flex items-center justify-center gap-2 border border-gray-700 bg-gray-800 text-white p-2 rounded-md transition hover:bg-gray-700"
       >
@@ -146,8 +146,8 @@ export default function Signup() {
       >
         <Github />
         Sign Up with GitHub
-      </button>
-      <p className="text-center  text-sm ">
+      </button> */}
+      <p className="text-center  text-lg">
         Already have an account{" "}
         <Link href={"/auth/login"} className="underline ">
           Sign In

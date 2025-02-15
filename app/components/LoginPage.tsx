@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 // import { signIn } from "next-auth/react";
-import { Eye, Github, Mail } from "lucide-react";
-import Image from "next/image";
+import { Eye, Mail } from "lucide-react";
+// import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 
@@ -120,23 +120,23 @@ export default function LoginPage() {
       </div>
 
       {/* Social Logins */}
-      <button
+      {/* <button
         // onClick={() => signIn("google")}
         className="flex items-center justify-center gap-2 border border-gray-700 bg-gray-800 text-white p-2 rounded-md transition"
       >
         <Image src={"/GoogleIcon.svg"} alt="icons" width={35} height={35} />
         Sign Up with Google
-      </button>
+      </button> */}
 
-      <button
+      {/* <button
         // onClick={() => signIn("github")}
         className="flex items-center justify-center gap-2 bg-gray-800 text-white p-2 rounded-md hover:bg-gray-900 transition"
       >
         <Github />
         Sign Up with GitHub
-      </button>
+      </button> */}
 
-      <p className="text-center  text-sm mt-1">
+      <p className="text-center  text-lg mt-1">
         Do not have an account{" "}
         <Link href={"/auth/signup"} className="underline ">
           Sign Up
